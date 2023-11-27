@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2023/11/24/hello-world/"/>
+      <url>/2023/11/24/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title></title>
+      <link href="/2023/11/24/JVM/3%E3%80%81%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/"/>
+      <url>/2023/11/24/JVM/3%E3%80%81%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/</url>
+      
+        <content type="html"><![CDATA[<p><img src="/.com//dongnan/Desktop/code/Note/JVM/image/9667414c527b4219b3c65a2e9bfc373b~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" alt="JVM运行时数据区"></p><h2 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h2><blockquote><p>栈不存在GC，但是可能会OOM</p><p>1.如何设置栈内存大小?</p><p>​-Xss size    一般默认为512k~1024k</p></blockquote><h3 id="栈桢（Stack-Frame）"><a href="#栈桢（Stack-Frame）" class="headerlink" title="栈桢（Stack Frame）"></a>栈桢（Stack Frame）</h3><p>一个栈帧中主要包含<strong>局部变量表、操作数栈、动态链接、方法出口</strong>等信息。</p><h4 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h4><ul><li>定义为一个数字数组，主要用于存储方法参数和定义在方法体内的局部变量</li><li>局部变量表所容纳的大小是在编译期确定下来的</li><li>方法嵌套调用的次数是由栈的大小决定的</li><li>局部变量表的变量只在当前方法调用中有效。方法调用结束后，随着方法栈桢的销毁，局部变量表也销毁</li></ul>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title></title>
+      <link href="/2023/11/24/JVM/2%E3%80%81JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/"/>
+      <url>/2023/11/24/JVM/2%E3%80%81JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/</url>
+      
+        <content type="html"><![CDATA[<h2 id="一、-类的加载过程"><a href="#一、-类的加载过程" class="headerlink" title="一、 类的加载过程"></a>一、 类的加载过程</h2><h3 id="过程一、Loading-装载-阶段"><a href="#过程一、Loading-装载-阶段" class="headerlink" title="过程一、Loading(装载)阶段"></a>过程一、Loading(装载)阶段</h3><p>所谓装载，就是把Java类的字节码文件加载到机器内存中，并在内存中构建出Java类的原型————类模版对象。</p><p>​<strong>装载完成的操作</strong></p><p>​装载阶段，简言之，查找并加载类的二进制数据，生成class的实例。</p><p>​在加载类时，Java虚拟机必须完成以下3件事情：</p><ul><li>通过类的全名，获取类的二进制数据流</li><li>解析类的二进制数据流为方法区内的数据结构（Java类模型）</li><li>创建java.long.Class类的实例，表示该模型。作为方法区这个类的各种数据的访问入口。</li></ul><p>​<strong>类模版对象</strong></p><p>​所谓类模版对象，其实就是Java类在JVM内存中的一个快照，JVM将从字节码文件中解析出来的常量池、类字段、类方法等信息存储到类模版中，这样JVM在运行期便能通过类模版而获取Java类中的基本信息，能够对Java类的成员变量进行遍历，也能进行Java方法的调用。</p><h3 id="过程二、Linking（链接）阶段"><a href="#过程二、Linking（链接）阶段" class="headerlink" title="过程二、Linking（链接）阶段"></a>过程二、Linking（链接）阶段</h3><h4 id="环节1：verification-验证"><a href="#环节1：verification-验证" class="headerlink" title="环节1：verification(验证)"></a>环节1：verification(验证)</h4><p>​当类加载到系统后，就开始链接操作，第一步就是验证</p><p>​&#x3D;&#x3D;目的是保证加载到字节码是合法、合理并符合规范的&#x3D;&#x3D;</p><p>​主要包括四种验证，文件格式验证，元数据验证，字节码验证，符号引用验证。 </p><h4 id="环节2：Preparation（准备）阶段"><a href="#环节2：Preparation（准备）阶段" class="headerlink" title="环节2：Preparation（准备）阶段"></a>环节2：Preparation（准备）阶段</h4><ul><li>为类的静态变量分配内存，并将其初始化为默认值</li><li>这里不包含用final static修饰的，因为final在编译的时候就会分配了，准备阶段会显式初始化； </li><li>这里不会为实例变量分配初始化 ，类变量会分配在方法区中，而实例变量是会随着对象一起分配到Java堆中。</li></ul><h4 id="环节3-Resolution（解析）阶段"><a href="#环节3-Resolution（解析）阶段" class="headerlink" title="环节3:Resolution（解析）阶段"></a>环节3:Resolution（解析）阶段</h4><ul><li><p>&#x3D;&#x3D;将常量池内的符号引用转换为直接引用的过程。&#x3D;&#x3D;</p></li><li><p>&#x3D;&#x3D;事实上，解析操作往往会伴随着JVM在执行完初始化之后再执行。&#x3D;&#x3D; </p><p>符号引用就是一组符号来描述所引用的目标。符号引用的字面量形式明确定义在《java虚拟机规范》的Class文件格式中。 </p><p>在解析阶段，jvm根据字符串的内容找到内存区域中相应的地址，然后把符号引用替换成直接指向目标的指针、句柄、偏移量等，这些直接指向目标的指针、句柄、偏移量就被成为 <strong>直接引用</strong> 。</p></li><li><p>解析动作主要针对类或接口、字段、类方法、接口方法、方法类型等。对应常量池中的CONSTANT_Class_info、CONSTANT_Fieldref_info、CONSTANT_Methodref_info等。</p></li></ul><h3 id="过程三、Initialization（初始化）阶段"><a href="#过程三、Initialization（初始化）阶段" class="headerlink" title="过程三、Initialization（初始化）阶段"></a>过程三、Initialization（初始化）阶段</h3><p>​为类的静态变量赋予正确的初始值。到了初始化阶段，才真正开始执行类中定义的程序代码。</p><p>​初始化阶段重要工作是执行类的初始化方法：<clinit>()方法</clinit></p><p>​</p><h3 id="过程四、类的Using（使用）"><a href="#过程四、类的Using（使用）" class="headerlink" title="过程四、类的Using（使用）"></a>过程四、类的Using（使用）</h3><h3 id="过程五、类的unloading（卸载）"><a href="#过程五、类的unloading（卸载）" class="headerlink" title="过程五、类的unloading（卸载）"></a>过程五、类的unloading（卸载）</h3><h2 id="二、JVM的类加载器"><a href="#二、JVM的类加载器" class="headerlink" title="二、JVM的类加载器"></a>二、JVM的类加载器</h2><p><img src="/.com//dongnan/Desktop/code/Note/JVM/image/dca31c18354f4f40a7190b17ef2c0eed~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp" alt="类加载器"></p><h4 id="3-1、Bootstrap-引导类加载器"><a href="#3-1、Bootstrap-引导类加载器" class="headerlink" title="3.1、Bootstrap 引导类加载器"></a>3.1、Bootstrap 引导类加载器</h4><p>引导类加载器在有些地方也被称为启动类加载器或根类加载器，但其实都是一个意思，都是在指<code>BootstrapClassLoader</code>。引导类加载器是使用C++语言实现的，是JVM自身的一部分，主要负责将<code>&lt;JAVA_HOME&gt;\lib</code>路径下的核心类库或<code>-Xbootclasspath</code>参数指定的路径下的jar包加载到内存中。</p><blockquote><p>注意：因为JVM是通过全限定名加载类库的，所以，如果你的文件名不被虚拟机识别，就算你把jar包丢入到lib目录下，引导类加载器也并不会加载它。出于安全考虑，Bootstrap启动类加载器只加载包名为java、javax、sun等开头的类文件。</p></blockquote><p>引导类加载器只为JVM提供加载服务，开发者不能直接使用它来加载自己的类。</p><h4 id="3-2、Extension-拓展类加载器"><a href="#3-2、Extension-拓展类加载器" class="headerlink" title="3.2、Extension 拓展类加载器"></a>3.2、Extension 拓展类加载器</h4><p>这个类加载器是由sun公司实现的，位于<code>HotSpot</code>源码目录中的<code>sun.misc.Launcher$ExtClassLoader</code>位置。它主要负责加载<code>&lt;JAVA_HOME&gt;\lib\ext</code>目录下或者由系统变量<code>-Djava.ext.dir</code>指定位路径中的类库。它可以直接被开发者使用。</p><h4 id="3-3、Application-系统类加载器"><a href="#3-3、Application-系统类加载器" class="headerlink" title="3.3、Application 系统类加载器"></a>3.3、Application 系统类加载器</h4><p>也被称为应用程序类加载器，也是由sun公司实现的，位于<code>HotSpot</code>源码目录中的<code>sun.misc.Launcher$AppClassLoader</code>位置。它负责加载系统类路径<code>java -classpath</code>或<code>-D java.class.path</code>指定路径下的类库，也就是经常用到的<code>classpath</code>路径。应用程序类加载器也可以直接被开发者使用。</p><blockquote><p>一般情况下，该类加载器是程序的默认类加载器，我们可以通过ClassLoader.getSystemClassLoader()方法可以直接获取到它。</p></blockquote><h4 id="3-4、User-自定义类加载器"><a href="#3-4、User-自定义类加载器" class="headerlink" title="3.4、User 自定义类加载器"></a>3.4、User 自定义类加载器</h4><p>在Java程序中，运行时一般都是通过如上三种类加载器相互配合执行的，当然，如果有特殊的加载需求也可以自定义类加载器，通过继承<code>ClassLoader</code>类实现（稍后分析）。</p><h3 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h3><ul><li>①自下向上检查类是否已经被加载</li><li>②从上至下尝试加载类</li></ul><h4 id="3-1、双亲委派类加载过程"><a href="#3-1、双亲委派类加载过程" class="headerlink" title="3.1、双亲委派类加载过程"></a>3.1、双亲委派类加载过程</h4><ul><li>①当<code>App</code>尝试加载一个类时，它不会直接尝试加载这个类，首先会在自己的命名空间中查询是否已经加载过这个类，如果没有会先将这个类加载请求委派给父类加载器<code>Ext</code>完成</li><li>②当<code>Ext</code>尝试加载一个类时，它也不会直接尝试加载这个类，也会在自己的命名空间中查询是否已经加载过这个类，没有的话也会先将这个类加载请求委派给父类加载器<code>Bootstrap</code>完成</li><li>③如果<code>Bootstrap</code>加载失败，也就是代表着：这个需要被加载的类不在<code>Bootstrap</code>的加载范围内，那么<code>Bootstrap</code>会重新将这个类加载请求交由子类加载器<code>Ext</code>完成</li><li>④如果<code>Ext</code>加载失败，代表着这个类也不在<code>Ext</code>的加载范围内，最后会重新将这个类加载请求交给子类加载器<code>App</code>完成</li><li>⑤如果<code>App</code>加载器也加载失败，就代表这个类根据全限定名无法查找到，则会抛出<code>ClassNotFoundException</code>异常</li></ul><h4 id><a href="#" class="headerlink" title></a></h4><blockquote><p>核心是 ClassLoader类的loadClass方法</p></blockquote>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title></title>
+      <link href="/2023/09/12/JVM/1%E3%80%81Java%E5%AD%97%E8%8A%82%E7%A0%81/"/>
+      <url>/2023/09/12/JVM/1%E3%80%81Java%E5%AD%97%E8%8A%82%E7%A0%81/</url>
+      
+        <content type="html"><![CDATA[<h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><h2 id="一、字节码文件概述"><a href="#一、字节码文件概述" class="headerlink" title="一、字节码文件概述"></a>一、字节码文件概述</h2><h4 id="1-什么是字节码指令（byte-code）"><a href="#1-什么是字节码指令（byte-code）" class="headerlink" title="1.什么是字节码指令（byte code）"></a>1.什么是字节码指令（byte code）</h4><p>Java虚拟机的指令是由一个字节长度的、代表着某种特定操作含义的操作码（opcode）以及跟随在其后的零至多个代表此操作所需参数的操作数（operand）所构成。虚拟机中许多指令并不包含操作数，只有一个操作码。</p><ul><li><p>包装类对象缓存问题</p><table><thead><tr><th>包装类</th><th>缓存问题</th></tr></thead><tbody><tr><td>Byte</td><td>-128~127</td></tr><tr><td>Short</td><td>-128~127</td></tr><tr><td>Integer</td><td>-128~127</td></tr><tr><td>Long</td><td>-128~127</td></tr><tr><td>Float</td><td>没有</td></tr><tr><td>Double</td><td>没有</td></tr><tr><td>Character</td><td>0-127</td></tr><tr><td>Boolean</td><td>true和false</td></tr></tbody></table></li></ul><p><strong>class文件的总体结构：</strong></p><ul><li>魔数</li><li>Class文件版本</li><li>常量池</li><li>访问标识</li><li>类索引、父类索引、接口索引集合</li><li>字段表集合</li><li>方法表集合</li><li>属性表集合</li></ul><p><strong>符号引用和直接引用</strong></p><p>​Java代码在进行Javac编译的时候，并不像C和C++那样有“连接”这一步骤，而是在虚拟机加载Class文件的时候进行动态链接。也就是说，&#x3D;&#x3D;在Class文件中不会保存各个方法、字段的最终内存布局信息，因此这些字段、方法的符号引用不经过运行期转换的话无法得到真正的内存入口地址，也就无法直接被虚拟机使用。&#x3D;&#x3D;当虚拟机运行时，需要从常量池获得对应的符号引用再在类创建时或运行时解析、翻译到具体的内存地址之中。<br>​虚拟机在加载类文件时才会进行动态链接，也就是说，类文件中不会保存各个方法和代码字段的最终内存布局信息，因此，这些字段和方法的符号引用不经过转换是无法直接被虚拟机使用的。&#x3D;&#x3D;当虚拟机运行时，需要从常量池中获得对应的符号引用，再在类加载过程中的解析阶段将其替换为直接引用，并翻译到具体的内存地址中。&#x3D;&#x3D;<br>​这里说明下符号引用和直接引用的区别与关联:<br>​符号引用:符号引用以一组符号来描述所引用的目标，符号可以是任何形式的字面量，只要使用时能无歧义地定位到目标即可。符号引用与虚拟机实现的内存布局无关，引用的目标并不一定已经加载到了内存中。<br>​直接引用:直接引用可以是直接指向目标的指针、相对偏移量或是一个能间接定位到目标的句柄。直接引用是与虚拟机实现的内存布局相关的，同一个符号引用在不同虚拟机实例上翻译出来的直接引用一般不会相同。如果有了直接引用，那说明引用的目标必定已经存在于内存之中了。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+  
+  
+</search>
