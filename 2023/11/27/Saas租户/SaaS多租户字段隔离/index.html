@@ -1,0 +1,331 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Saas多租户字段隔离 | Miller</title><meta name="author" content="Miller"><meta name="copyright" content="Miller"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SaaS 多租户【字段隔离】本章节，将介绍多租户的基础知识、以及怎样使用多租户的功能。 相关的视频教程：  01、如何实现多租户的 DB 封装？(opens new window) 02、如何实现多租户的 Redis 封装？(opens new window) 03、如何实现多租户的 Web 与 Security 封装？(opens new window) 04、如何实现多租户的 Job 封装？(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Saas多租户字段隔离">
+<meta property="og:url" content="http://example.com/2023/11/27/Saas%E7%A7%9F%E6%88%B7/SaaS%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AD%97%E6%AE%B5%E9%9A%94%E7%A6%BB/index.html">
+<meta property="og:site_name" content="Miller">
+<meta property="og:description" content="SaaS 多租户【字段隔离】本章节，将介绍多租户的基础知识、以及怎样使用多租户的功能。 相关的视频教程：  01、如何实现多租户的 DB 封装？(opens new window) 02、如何实现多租户的 Redis 封装？(opens new window) 03、如何实现多租户的 Web 与 Security 封装？(opens new window) 04、如何实现多租户的 Job 封装？(">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg.png">
+<meta property="article:published_time" content="2023-11-27T14:15:37.000Z">
+<meta property="article:modified_time" content="2023-11-27T08:02:34.721Z">
+<meta property="article:author" content="Miller">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2023/11/27/Saas%E7%A7%9F%E6%88%B7/SaaS%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AD%97%E6%AE%B5%E9%9A%94%E7%A6%BB/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Saas多租户字段隔离',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-27 16:02:34'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Miller"><span class="site-name">Miller</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">Saas多租户字段隔离</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-27T14:15:37.000Z" title="发表于 2023-11-27 22:15:37">2023-11-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-27T08:02:34.721Z" title="更新于 2023-11-27 16:02:34">2023-11-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/">Saas多租户</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Saas多租户字段隔离"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h1 id="SaaS-多租户【字段隔离】"><a href="#SaaS-多租户【字段隔离】" class="headerlink" title="SaaS 多租户【字段隔离】"></a>SaaS 多租户【字段隔离】</h1><p>本章节，将介绍多租户的基础知识、以及怎样使用多租户的功能。</p>
+<p>相关的视频教程：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://t.zsxq.com/06ufyFAeM">01、如何实现多租户的 DB 封装？(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://t.zsxq.com/067eQfAQN">02、如何实现多租户的 Redis 封装？(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://t.zsxq.com/06Nnm6QBE">03、如何实现多租户的 Web 与 Security 封装？(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://t.zsxq.com/06AYJUR3V">04、如何实现多租户的 Job 封装？(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://t.zsxq.com/06aq3nuNF">05、如何实现多租户的 MQ 与 Async 封装？(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://t.zsxq.com/06vFQVJIe">06、如何实现多租户的 AOP 与 Util 封装？(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://t.zsxq.com/063bqRrNZ">07、如何实现多租户的管理？(opens new window)</a></li>
+<li><a target="_blank" rel="noopener" href="https://t.zsxq.com/06rBI66yV">08、如何实现多租户的套餐？(opens new window)</a></li>
+</ul>
+<h2 id="1-多租户是什么？"><a href="#1-多租户是什么？" class="headerlink" title="#1. 多租户是什么？"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_1-%E5%A4%9A%E7%A7%9F%E6%88%B7%E6%98%AF%E4%BB%80%E4%B9%88">#</a>1. 多租户是什么？</h2><p>多租户，简单来说是指<strong>一个</strong>业务系统，可以为<strong>多个</strong>组织服务，并且组织之间的数据是<strong>隔离</strong>的。</p>
+<p>例如说，在服务上部署了一个 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro"><code>ruoyi-vue-pro</code> (opens new window)</a>系统，可以支持多个不同的公司使用。这里的<strong>一个公司就是一个租户</strong>，每个用户必然属于某个租户。因此，用户也只能看见自己租户下面的内容，其它租户的内容对他是不可见的。</p>
+<h2 id="2-数据隔离方案"><a href="#2-数据隔离方案" class="headerlink" title="#2. 数据隔离方案"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_2-%E6%95%B0%E6%8D%AE%E9%9A%94%E7%A6%BB%E6%96%B9%E6%A1%88">#</a>2. 数据隔离方案</h2><p>多租户的数据隔离方案，可以分成分成三种：</p>
+<ol>
+<li>DATASOURCE 模式：独立数据库</li>
+<li>SCHEMA 模式：共享数据库，独立 Schema</li>
+<li>COLUMN 模式：共享数据库，共享 Schema，共享数据表</li>
+</ol>
+<h3 id="2-1-DATASOURCE-模式"><a href="#2-1-DATASOURCE-模式" class="headerlink" title="#2.1 DATASOURCE 模式"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_2-1-datasource-%E6%A8%A1%E5%BC%8F">#</a>2.1 DATASOURCE 模式</h3><p>一个租户一个数据库，这种方案的用户数据隔离级别最高，安全性最好，但成本也高。</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/DATASOURCE%E6%A8%A1%E5%BC%8F.png" alt="DATASOURCE 模式"></p>
+<ul>
+<li>优点：为不同的租户提供独立的数据库，有助于简化数据模型的扩展设计，满足不同租户的独特需求；如果出现故障，恢复数据比较简单。</li>
+<li>缺点：增大了数据库的安装数量，随之带来维护成本和购置成本的增加。</li>
+</ul>
+<h3 id="2-2-SCHEMA-模式"><a href="#2-2-SCHEMA-模式" class="headerlink" title="#2.2 SCHEMA 模式"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_2-2-schema-%E6%A8%A1%E5%BC%8F">#</a>2.2 SCHEMA 模式</h3><p>多个或所有租户共享数据库，但一个租户一个表。</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/SCHEMA%E6%A8%A1%E5%BC%8F.png" alt="SCHEMA 模式"></p>
+<ul>
+<li>优点：为安全性要求较高的租户提供了一定程度的逻辑数据隔离，并不是完全隔离；每个数据库可以支持更多的租户数量。</li>
+<li>缺点：如果出现故障，数据恢复比较困难，因为恢复数据库将牵扯到其他租户的数据； 如果需要跨租户统计数据，存在一定困难。</li>
+</ul>
+<h3 id="2-3-COLUMN-模式"><a href="#2-3-COLUMN-模式" class="headerlink" title="#2.3 COLUMN 模式"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_2-3-column-%E6%A8%A1%E5%BC%8F">#</a>2.3 COLUMN 模式</h3><p>共享数据库，共享数据架构。租户共享同一个数据库、同一个表，但在表中通过 <code>tenant_id</code> 字段区分租户的数据。这是共享程度最高、隔离级别最低的模式。</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/COLUMN%E6%A8%A1%E5%BC%8F.png" alt="COLUMN 模式"></p>
+<ul>
+<li>优点：维护和购置成本最低，允许每个数据库支持的租户数量最多。</li>
+<li>缺点：隔离级别最低，安全性最低，需要在设计开发时加大对安全的开发量；数据备份和恢复最困难，需要逐表逐条备份和还原。</li>
+</ul>
+<h3 id="2-4-方案选择"><a href="#2-4-方案选择" class="headerlink" title="#2.4 方案选择"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_2-4-%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9">#</a>2.4 方案选择</h3><p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/%E6%A8%A1%E5%BC%8F%E9%80%89%E6%8B%A9.png" alt="模式选择"></p>
+<ul>
+<li>一般情况下，可以考虑采用 COLUMN 模式，开发、运维简单，以最少的服务器为最多的租户提供服务。</li>
+<li>租户规模比较大，或者一些租户对安全性要求较高，可以考虑采用 DATASOURCE 模式，当然它也相对复杂的多。</li>
+<li>不推荐采用 SCHEMA 模式，因为它的优点并不明显，而且它的缺点也很明显，同时对复杂 SQL 支持一般。</li>
+</ul>
+<p>提问：项目支持哪些模式？</p>
+<p>目前支持最主流的 DATASOURCE 和 COLUMN 两种模式。而 SCHEMA 模式不推荐使用，所以暂时不考虑实现。</p>
+<p>考虑到让大家更好的理解 DATASOURCE 和 COLUMN 模式，拆成了两篇文章：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant">《SaaS 多租户【字段隔离】》</a>：讲解 COLUMN 模式</li>
+<li><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/dynamic">《SaaS 多租户【数据库隔离】》</a>：讲解 DATASOURCE 模式</li>
+</ul>
+<h2 id="3-多租户的开关"><a href="#3-多租户的开关" class="headerlink" title="#3. 多租户的开关"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_3-%E5%A4%9A%E7%A7%9F%E6%88%B7%E7%9A%84%E5%BC%80%E5%85%B3">#</a>3. 多租户的开关</h2><p>系统有两个配置项，设置为 <code>true</code> 时开启多租户，设置为 <code>false</code> 时关闭多租户。</p>
+<p>注意，两者需要保持一致，否则会报错！</p>
+<table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>说明</th>
+<th>配置文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>yudao.server.tenant</code></td>
+<td>后端开关</td>
+<td><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/01.png" alt="示例"></td>
+</tr>
+<tr>
+<td><code>VUE_APP_TENANT_ENABLE</code></td>
+<td>前端开关</td>
+<td><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/02.png" alt="示例"></td>
+</tr>
+</tbody></table>
+<p>疑问：为什么要设置两个配置项？</p>
+<p>前端登录界面需要使用到多租户的配置项，从后端加载配置项的话，体验会比较差。</p>
+<h2 id="4-多租户的业务功能"><a href="#4-多租户的业务功能" class="headerlink" title="#4. 多租户的业务功能"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_4-%E5%A4%9A%E7%A7%9F%E6%88%B7%E7%9A%84%E4%B8%9A%E5%8A%A1%E5%8A%9F%E8%83%BD">#</a>4. 多租户的业务功能</h2><p>多租户主要有两个业务功能：</p>
+<table>
+<thead>
+<tr>
+<th>业务功能</th>
+<th>说明</th>
+<th>界面</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>租户管理</td>
+<td>配置系统租户，创建对应的租户管理员</td>
+<td><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/03.png" alt="租户管理"></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-module-system/yudao-module-system-biz/src/main/java/cn/iocoder/yudao/module/system/service/tenant/TenantServiceImpl.java">后端 (opens new window)</a><a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-ui-admin/src/views/system/tenant/index.vue">前端(opens new window)</a></td>
+</tr>
+<tr>
+<td>租户套餐</td>
+<td>配置租户套餐，自定每个租户的菜单、操作、按钮的权限</td>
+<td><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/04.png" alt="租户套餐"></td>
+<td><a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-module-system/yudao-module-system-biz/src/main/java/cn/iocoder/yudao/module/system/service/tenant/TenantPackageServiceImpl.java">后端 (opens new window)</a><a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-ui-admin/src/views/system/tenantPackage/index.vue">前端(opens new window)</a></td>
+</tr>
+</tbody></table>
+<p><strong>下面，我们来新增一个租户，它使用 COLUMN 模式。</strong></p>
+<p>① 点击 [租户套餐] 菜单，点击 [新增] 按钮，填写租户的信息。</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/05.png" alt="新增租户"></p>
+<p>② 点击 [确认] 按钮，完成租户的创建，它会自动创建对应的租户管理员、角色等信息。</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/06.png" alt="租户的管理员、角色"></p>
+<p>③ 退出系统，登录刚创建的租户。</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/07.png" alt="登录界面"></p>
+<p>至此，我们已经完成了租户的创建。</p>
+<h2 id="5-多租户的技术组件"><a href="#5-多租户的技术组件" class="headerlink" title="#5. 多租户的技术组件"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-%E5%A4%9A%E7%A7%9F%E6%88%B7%E7%9A%84%E6%8A%80%E6%9C%AF%E7%BB%84%E4%BB%B6">#</a>5. 多租户的技术组件</h2><p>技术组件 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/tree/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/"><code>yudao-spring-boot-starter-biz-tenant</code> (opens new window)</a>，实现透明化的多租户能力，针对 Web、Security、DB、Redis、AOP、Job、MQ、Async 等多个层面进行封装。</p>
+<h3 id="5-1-租户上下文"><a href="#5-1-租户上下文" class="headerlink" title="#5.1 租户上下文"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-1-%E7%A7%9F%E6%88%B7%E4%B8%8A%E4%B8%8B%E6%96%87">#</a>5.1 租户上下文</h3><p><a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/context/TenantContextHolder.java">TenantContextHolder (opens new window)</a>是租户上下文，通过 ThreadLocal 实现租户编号的共享与传递。</p>
+<p>通过调用 TenantContextHolder 的 <code>#getTenantId()</code> <strong>静态</strong>方法，获得当前的租户编号。绝绝绝大多数情况下，并不需要。</p>
+<h3 id="5-2-Web-层【重要】"><a href="#5-2-Web-层【重要】" class="headerlink" title="#5.2 Web 层【重要】"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-2-web-%E5%B1%82%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91">#</a>5.2 Web 层【重要】</h3><blockquote>
+<p>实现可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/tree/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/web"><code>web</code> (opens new window)</a>包。</p>
+</blockquote>
+<p>默认情况下，前端的每个请求 Header <strong>必须</strong>带上 <code>tenant-id</code>，值为租户编号，即 <code>system_tenant</code> 表的主键编号。</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/08.png" alt="请求示例"></p>
+<p>如果不带该请求头，会报“租户的请求未传递，请进行排查”错误提示。</p>
+<p>😜 通过 <code>yudao.tenant.ignore-urls</code> 配置项，可以设置哪些 URL 无需带该请求头。例如说：</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/09.png" alt=" 配置项"></p>
+<h3 id="5-3-Security-层"><a href="#5-3-Security-层" class="headerlink" title="#5.3 Security 层"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-3-security-%E5%B1%82">#</a>5.3 Security 层</h3><blockquote>
+<p>实现可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/tree/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/security"><code>security</code> (opens new window)</a>包。</p>
+</blockquote>
+<p>主要是校验登录的用户，校验是否有权限访问该租户，避免越权问题。</p>
+<h3 id="5-4-DB-层【重要】"><a href="#5-4-DB-层【重要】" class="headerlink" title="#5.4 DB 层【重要】"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-4-db-%E5%B1%82%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91">#</a>5.4 DB 层【重要】</h3><blockquote>
+<p>实现可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/tree/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/db"><code>db</code> (opens new window)</a>包。</p>
+</blockquote>
+<p>COLUMN 模式，基于 MyBatis Plus 自带的<a target="_blank" rel="noopener" href="https://baomidou.com/pages/aef2f2/">多租户 (opens new window)</a>功能实现。</p>
+<p>核心：每次对数据库操作时，它会<strong>自动</strong>拼接 <code>WHERE tenant_id = ?</code> 条件来进行租户的过滤，并且基本支持所有的 SQL 场景。</p>
+<p>如下是具体方式：</p>
+<p>① <strong>需要</strong>开启多租户的表，必须添加 <code>tenant_id</code> 字段。例如说 <code>system_users</code>、<code>system_role</code> 等表。</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `system_role` (</span><br><span class="line">   `id` <span class="type">bigint</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> AUTO_INCREMENT COMMENT <span class="string">&#x27;角色ID&#x27;</span>,</span><br><span class="line">   `name` <span class="type">varchar</span>(<span class="number">30</span>) <span class="type">CHARACTER</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;角色名称&#x27;</span>,</span><br><span class="line">   `tenant_id` <span class="type">bigint</span> <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span> COMMENT <span class="string">&#x27;租户编号&#x27;</span>,</span><br><span class="line">   <span class="keyword">PRIMARY</span> KEY (`id`) <span class="keyword">USING</span> BTREE</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB AUTO_INCREMENT<span class="operator">=</span><span class="number">1</span> COMMENT<span class="operator">=</span><span class="string">&#x27;角色信息表&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>并且该表对应的 DO 需要使用到 <code>tenantId</code> 属性时，建议继承 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/db/TenantBaseDO.java">TenantBaseDO (opens new window)</a>类。</p>
+<p>② <strong>无需</strong>开启多租户的表，需要添加表名到 <code>yudao.tenant.ignore-tables</code> 配置项目。例如说：</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/10.png" alt=" 配置项"></p>
+<p>如果不配置的话，MyBatis Plus 会自动拼接 <code>WHERE tenant_id = ?</code> 条件，导致报 <code>tenant_id</code> 字段不存在的错误。</p>
+<h3 id="5-5-Redis-层【重要】"><a href="#5-5-Redis-层【重要】" class="headerlink" title="#5.5 Redis 层【重要】"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-5-redis-%E5%B1%82%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91">#</a>5.5 Redis 层【重要】</h3><blockquote>
+<p>实现可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/tree/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/redis"><code>redis</code> (opens new window)</a>包。</p>
+</blockquote>
+<p>由于 Redis 不同于 DB 有 <code>tenant_id</code> 字段，无法通过类似 <code>WHERE tenant_id</code> &#x3D; ? 的方式过滤，所以需要通过在 Redis Key 上增加 <code>:t&#123;tenantId&#125;</code> 后缀的方式，进行租户之间的隔离。</p>
+<p>例如说，假设 Redis Key 是 <code>user:%d</code>，示例是 <code>user:1024</code>；对应到多租户 1 的 Redis Key 是 <code>user:t1:1024</code>。</p>
+<p>为什么 Redis Key 要多租户隔离呢？</p>
+<ul>
+<li>① 在使用 DATASOURCE 模式时，不同库的相同表的 id 可能相同，例如说 A 库的用户，和 B 库的用户都是 1024，直接缓存会存在 Redis Key 的冲突。</li>
+<li>② 在所有模式下，跨租户可能存在相同的需要唯一的数据，例如说用户的手机号，直接缓存会存在 Redis Key 的冲突。</li>
+</ul>
+<h4 id="使用方式一：基于-Spring-Cache-Redis【推荐】"><a href="#使用方式一：基于-Spring-Cache-Redis【推荐】" class="headerlink" title="#使用方式一：基于 Spring Cache + Redis【推荐】"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%80-%E5%9F%BA%E4%BA%8E-spring-cache-redis%E3%80%90%E6%8E%A8%E8%8D%90%E3%80%91">#</a>使用方式一：基于 Spring Cache + Redis【推荐】</h4><p>只需要一步，在方法上添加 Spring Cache 注解，例如说 <code>@Cachable</code>、<code>@CachePut</code>、<code>@CacheEvict</code>。</p>
+<p>具体的实现原理，可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/redis/TenantRedisCacheManager.java">TenantRedisCacheManager (opens new window)</a>的源码。</p>
+<p>注意！！！默认配置下，Spring Cache 都开启 Redis Key 的多租户隔离。如果不需要，可以将 Key 添加到 <code>yudao.tenant.ignore-cache</code> 配置项中。如下图所示：</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/%E5%BF%BD%E7%95%A5%E5%A4%9A%E7%A7%9F%E6%88%B7RedisKey.png" alt=" 配置项"></p>
+<h4 id="使用方式二：基于-RedisTemplate-TenantRedisKeyDefine"><a href="#使用方式二：基于-RedisTemplate-TenantRedisKeyDefine" class="headerlink" title="#使用方式二：基于 RedisTemplate + TenantRedisKeyDefine"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F%E4%BA%8C-%E5%9F%BA%E4%BA%8E-redistemplate-tenantrediskeydefine">#</a>使用方式二：基于 RedisTemplate + TenantRedisKeyDefine</h4><p>暂时没有合适的封装，需要在自己 format Redis Key 的时候，手动将 <code>:t&#123;tenantId&#125;</code> 后缀拼接上。</p>
+<p>这也是为什么，我推荐你使用 Spring Cache + Redis 的原因！</p>
+<h3 id="5-6-AOP【重要】"><a href="#5-6-AOP【重要】" class="headerlink" title="#5.6 AOP【重要】"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-6-aop%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91">#</a>5.6 AOP【重要】</h3><blockquote>
+<p>实现可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/tree/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/aop"><code>aop</code> (opens new window)</a>包。</p>
+</blockquote>
+<p>① 声明 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/aop/TenantIgnore.java"><code>@TenantIgnore</code> (opens new window)</a>注解在方法上，标记指定方法不进行租户的自动过滤，避免<strong>自动</strong>拼接 <code>WHERE tenant_id = ?</code> 条件等等。</p>
+<p>例如说：<a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-module-system/yudao-module-system-biz/src/main/java/cn/iocoder/yudao/module/system/service/permission/RoleServiceImpl.java">RoleServiceImpl (opens new window)</a>的 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-module-system/yudao-module-system-biz/src/main/java/cn/iocoder/yudao/module/system/service/permission/RoleServiceImpl.java#L83-L100"><code>#initLocalCache()</code> (opens new window)</a>方法，加载<strong>所有</strong>租户的角色到内存进行缓存，如果不声明 <code>@TenantIgnore</code> 注解，会导致租户的自动过滤，只加载了某个租户的角色。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// RoleServiceImpl.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RoleServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">RoleService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="meta">@Lazy</span> <span class="comment">// 注入自己，所以延迟加载</span></span><br><span class="line">    <span class="keyword">private</span> RoleService self;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="meta">@TenantIgnore</span> <span class="comment">// 忽略自动多租户，全局初始化缓存</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initLocalCache</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// ... 从数据库中，加载角色</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Scheduled(fixedDelay = SCHEDULER_PERIOD, initialDelay = SCHEDULER_PERIOD)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">schedulePeriodicRefresh</span><span class="params">()</span> &#123;</span><br><span class="line">        self.initLocalCache(); <span class="comment">// &lt;x&gt; 通过 self 引用到 Spring 代理对象</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>有一点要格外注意，由于 <code>@TenantIgnore</code> 注解是基于 Spring AOP 实现，如果是<strong>方法内部的调用</strong>，避免使用 <code>this</code> 导致不生效，可以采用上述示例的 <code>&lt;x&gt;</code> 处的 <code>self</code> 方式。</p>
+<p>② 使用 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/util/TenantUtils.java">TenantUtils (opens new window)</a>的 <code>#execute(Long tenantId, Runnable runnable)</code> 方法，模拟指定租户( <code>tenantId</code> )，执行某段业务逻辑( <code>runnable</code> )。</p>
+<p>例如说：在 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-module-system/yudao-module-system-biz/src/main/java/cn/iocoder/yudao/module/system/service/tenant/TenantServiceImpl.java">TenantServiceImpl (opens new window)</a>的 <code>#createTenant(...)</code> 方法，在创建完租户时，需要模拟该租户，进行用户和角色的创建。如下图所示：</p>
+<p><img src="https://doc.iocoder.cn/img/Saas%E5%A4%9A%E7%A7%9F%E6%88%B7/11.png" alt="TenantUtils 模拟租户"></p>
+<h3 id="5-7-Job【重要】"><a href="#5-7-Job【重要】" class="headerlink" title="#5.7 Job【重要】"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-7-job%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91">#</a>5.7 Job【重要】</h3><blockquote>
+<p>实现可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/tree/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/job"><code>job</code> (opens new window)</a>包。</p>
+</blockquote>
+<p>声明 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/job/TenantJob.java"><code>@TenantJob</code> (opens new window)</a>注解在 Job 类上，实现<strong>并行</strong>遍历每个租户，执行定时任务的逻辑。</p>
+<h3 id="5-8-MQ"><a href="#5-8-MQ" class="headerlink" title="#5.8 MQ"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-8-mq">#</a>5.8 MQ</h3><blockquote>
+<p>实现可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/tree/master/yudao-framework/yudao-spring-boot-starter-biz-tenant/src/main/java/cn/iocoder/yudao/framework/tenant/core/mq"><code>mq</code> (opens new window)</a>包。</p>
+</blockquote>
+<p>通过租户对 MQ 层面的封装，实现租户上下文，可以继续传递到 MQ 消费的逻辑中，避免丢失的问题。实现原理是：</p>
+<ul>
+<li>发送消息时，MQ 会将租户上下文的租户编号，记录到 Message 消息头 <code>tenant-id</code> 上。</li>
+<li>消费消息时，MQ 会将 Message 消息头 <code>tenant-id</code>，设置到租户上下文的租户编号。</li>
+</ul>
+<h3 id="5-9-Async"><a href="#5-9-Async" class="headerlink" title="#5.9 Async"></a><a target="_blank" rel="noopener" href="https://doc.iocoder.cn/saas-tenant/#_5-9-async">#</a>5.9 Async</h3><blockquote>
+<p>实现可见 <a target="_blank" rel="noopener" href="https://github.com/YunaiV/ruoyi-vue-pro/blob/master/yudao-framework/yudao-spring-boot-starter-job/src/main/java/cn/iocoder/yudao/framework/quartz/config/YudaoAsyncAutoConfiguration.java"><code>YudaoAsyncAutoConfiguration</code> (opens new window)</a>类。</p>
+</blockquote>
+<p>通过使用阿里开源的 <a target="_blank" rel="noopener" href="https://github.com/alibaba/transmittable-thread-local">TransmittableThreadLocal (opens new window)</a>组件，实现 Spring Async 执行异步逻辑时，租户上下文可以继续传递，避免丢失的问题。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Miller</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2023/11/27/Saas%E7%A7%9F%E6%88%B7/SaaS%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AD%97%E6%AE%B5%E9%9A%94%E7%A6%BB/">http://example.com/2023/11/27/Saas%E7%A7%9F%E6%88%B7/SaaS%E5%A4%9A%E7%A7%9F%E6%88%B7%E5%AD%97%E6%AE%B5%E9%9A%94%E7%A6%BB/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Miller</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/11/27/JUC%E7%AC%94%E8%AE%B0/JUC/" title="JUC"><img class="cover" src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">JUC</div></div></a></div><div class="next-post pull-right"><a href="/2023/11/27/MySQL/MySQL/" title="MYSQL"><img class="cover" src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MYSQL</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Miller</div><div class="author-info__description">Miller</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">25</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dongxiaopipi"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/dongxiaopipi" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SaaS-%E5%A4%9A%E7%A7%9F%E6%88%B7%E3%80%90%E5%AD%97%E6%AE%B5%E9%9A%94%E7%A6%BB%E3%80%91"><span class="toc-number">1.</span> <span class="toc-text">SaaS 多租户【字段隔离】</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%A4%9A%E7%A7%9F%E6%88%B7%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">1. 多租户是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%95%B0%E6%8D%AE%E9%9A%94%E7%A6%BB%E6%96%B9%E6%A1%88"><span class="toc-number">1.2.</span> <span class="toc-text">2. 数据隔离方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-DATASOURCE-%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 DATASOURCE 模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-SCHEMA-%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 SCHEMA 模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-COLUMN-%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 COLUMN 模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4 方案选择</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%A4%9A%E7%A7%9F%E6%88%B7%E7%9A%84%E5%BC%80%E5%85%B3"><span class="toc-number">1.3.</span> <span class="toc-text">3. 多租户的开关</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%A4%9A%E7%A7%9F%E6%88%B7%E7%9A%84%E4%B8%9A%E5%8A%A1%E5%8A%9F%E8%83%BD"><span class="toc-number">1.4.</span> <span class="toc-text">4. 多租户的业务功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%A4%9A%E7%A7%9F%E6%88%B7%E7%9A%84%E6%8A%80%E6%9C%AF%E7%BB%84%E4%BB%B6"><span class="toc-number">1.5.</span> <span class="toc-text">5. 多租户的技术组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E7%A7%9F%E6%88%B7%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 租户上下文</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-Web-%E5%B1%82%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 Web 层【重要】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-Security-%E5%B1%82"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 Security 层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-DB-%E5%B1%82%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91"><span class="toc-number">1.5.4.</span> <span class="toc-text">5.4 DB 层【重要】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-Redis-%E5%B1%82%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91"><span class="toc-number">1.5.5.</span> <span class="toc-text">5.5 Redis 层【重要】</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F%E4%B8%80%EF%BC%9A%E5%9F%BA%E4%BA%8E-Spring-Cache-Redis%E3%80%90%E6%8E%A8%E8%8D%90%E3%80%91"><span class="toc-number">1.5.5.1.</span> <span class="toc-text">使用方式一：基于 Spring Cache + Redis【推荐】</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F%E4%BA%8C%EF%BC%9A%E5%9F%BA%E4%BA%8E-RedisTemplate-TenantRedisKeyDefine"><span class="toc-number">1.5.5.2.</span> <span class="toc-text">使用方式二：基于 RedisTemplate + TenantRedisKeyDefine</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-6-AOP%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91"><span class="toc-number">1.5.6.</span> <span class="toc-text">5.6 AOP【重要】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-7-Job%E3%80%90%E9%87%8D%E8%A6%81%E3%80%91"><span class="toc-number">1.5.7.</span> <span class="toc-text">5.7 Job【重要】</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-8-MQ"><span class="toc-number">1.5.8.</span> <span class="toc-text">5.8 MQ</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-9-Async"><span class="toc-number">1.5.9.</span> <span class="toc-text">5.9 Async</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/11/29/MySQL/Mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" title="Mysql主从复制"><img src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mysql主从复制"/></a><div class="content"><a class="title" href="/2023/11/29/MySQL/Mysql%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/" title="Mysql主从复制">Mysql主从复制</a><time datetime="2023-11-29T02:15:37.000Z" title="发表于 2023-11-29 10:15:37">2023-11-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/27/ElasticSearch/" title="ElasticSearch"><img src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ElasticSearch"/></a><div class="content"><a class="title" href="/2023/11/27/ElasticSearch/" title="ElasticSearch">ElasticSearch</a><time datetime="2023-11-27T14:15:37.000Z" title="发表于 2023-11-27 22:15:37">2023-11-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/27/JDK/" title="JDK1.8新特性"><img src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JDK1.8新特性"/></a><div class="content"><a class="title" href="/2023/11/27/JDK/" title="JDK1.8新特性">JDK1.8新特性</a><time datetime="2023-11-27T14:15:37.000Z" title="发表于 2023-11-27 22:15:37">2023-11-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/27/JVM/3%E3%80%81%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/" title="JVM运行时内存"><img src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JVM运行时内存"/></a><div class="content"><a class="title" href="/2023/11/27/JVM/3%E3%80%81%E8%BF%90%E8%A1%8C%E6%97%B6%E5%86%85%E5%AD%98/" title="JVM运行时内存">JVM运行时内存</a><time datetime="2023-11-27T14:15:37.000Z" title="发表于 2023-11-27 22:15:37">2023-11-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/11/27/Java/%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB/" title="匿名内部类"><img src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="匿名内部类"/></a><div class="content"><a class="title" href="/2023/11/27/Java/%E5%8C%BF%E5%90%8D%E5%86%85%E9%83%A8%E7%B1%BB/" title="匿名内部类">匿名内部类</a><time datetime="2023-11-27T14:15:37.000Z" title="发表于 2023-11-27 22:15:37">2023-11-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Miller</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
