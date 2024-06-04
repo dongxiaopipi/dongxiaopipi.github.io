@@ -1,0 +1,608 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Miller | Miller</title><meta name="author" content="Miller"><meta name="copyright" content="Miller"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="一、基础概念理解 集群 master worker Node     Pod 应用最终以Pod为一个基本单位部署   Label 很多资源都可以打标签   Deployment 应用部署用它，deployment最终会产生Pod   Service 负载均衡机制    二、kubernetes Objects（k8s对象）1、什么是k8s对象 https:&#x2F;&#x2F;kubernetes.io&#x2F;zh&#x2F;do">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Miller">
+<meta property="og:url" content="https://dongxiaopipi.github.io/2021/04/30/kubernetes/02%E3%80%81Kubernetes-%E6%A6%82%E5%BF%B5/index.html">
+<meta property="og:site_name" content="Miller">
+<meta property="og:description" content="一、基础概念理解 集群 master worker Node     Pod 应用最终以Pod为一个基本单位部署   Label 很多资源都可以打标签   Deployment 应用部署用它，deployment最终会产生Pod   Service 负载均衡机制    二、kubernetes Objects（k8s对象）1、什么是k8s对象 https:&#x2F;&#x2F;kubernetes.io&#x2F;zh&#x2F;do">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg3.png">
+<meta property="article:published_time" content="2021-04-30T02:35:04.000Z">
+<meta property="article:modified_time" content="2024-06-04T02:49:36.127Z">
+<meta property="article:author" content="Miller">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg3.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://dongxiaopipi.github.io/2021/04/30/kubernetes/02%E3%80%81Kubernetes-%E6%A6%82%E5%BF%B5/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Miller","link":"链接: ","source":"来源: Miller","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Miller',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-04 10:49:36'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.2.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="Miller"><span class="site-name">Miller</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于我</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">无题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-04-30T02:35:04.000Z" title="发表于 2021-04-30 10:35:04">2021-04-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-04T02:49:36.127Z" title="更新于 2024-06-04 10:49:36">2024-06-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">6.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>28分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="post-content" id="article-container"><h1 id="一、基础概念理解"><a href="#一、基础概念理解" class="headerlink" title="一、基础概念理解"></a>一、基础概念理解</h1><ul>
+<li>集群<ul>
+<li>master</li>
+<li>worker<ul>
+<li>Node</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Pod<ul>
+<li>应用最终以Pod为一个基本单位部署</li>
+</ul>
+</li>
+<li>Label<ul>
+<li>很多资源都可以打标签</li>
+</ul>
+</li>
+<li>Deployment<ul>
+<li>应用部署用它，deployment最终会产生Pod</li>
+</ul>
+</li>
+<li>Service<ul>
+<li>负载均衡机制</li>
+</ul>
+</li>
+</ul>
+<h1 id="二、kubernetes-Objects（k8s对象）"><a href="#二、kubernetes-Objects（k8s对象）" class="headerlink" title="二、kubernetes Objects（k8s对象）"></a>二、kubernetes Objects（k8s对象）</h1><h2 id="1、什么是k8s对象"><a href="#1、什么是k8s对象" class="headerlink" title="1、什么是k8s对象"></a>1、什么是k8s对象</h2><p> <a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/concepts/overview/working-with-objects/kubernetes-objects/">https://kubernetes.io/zh/docs/concepts/overview/working-with-objects/kubernetes-objects/</a> </p>
+<ul>
+<li><p><strong>k8s里面操作的资源实体，就是k8s的对象，可以使用yaml来声明对象。然后让k8s根据yaml的声明创建出这个对象；</strong>kubectl create&#x2F;run &#x2F;expose…..</p>
+</li>
+<li><p>操作 Kubernetes 对象 —— 无论是创建、修改，或者删除 —— 需要使用 <a target="_blank" rel="noopener" href="https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md">Kubernetes API</a>。比如，当使用 <code>kubectl</code> 命令行接口时，CLI 会执行必要的 Kubernetes API 调用 </p>
+</li>
+<li><p>Kubernetes对象指的是Kubernetes系统的持久化实体，所有这些对象合起来，代表了你集群的实际情况。常规的应用里，我们把应用程序的数据存储在数据库中，<strong>Kubernetes将其数据以Kubernetes对象的形式通过 api server存储在 etcd 中</strong>。具体来说，这些数据（Kubernetes对象）描述了：</p>
+<ul>
+<li>集群中运行了哪些容器化应用程序（以及在哪个节点上运行）</li>
+<li>集群中对应用程序可用的资源（网络，存储等）</li>
+<li>应用程序相关的策略定义，例如，重启策略、升级策略、容错策略</li>
+<li>其他Kubernetes管理应用程序时所需要的信息<br>scheduler先计算应该去哪个节点部署</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>对象的spec和status</p>
+<p>每一个 Kubernetes 对象都包含了两个重要的字段：</p>
+<ul>
+<li><code>spec</code> 必须由您来提供，描述了您对该对象所期望的 <strong>目标状态</strong></li>
+<li><code>status</code> 只能由 Kubernetes 系统来修改，描述了该对象在 Kubernetes 系统中的 <strong>实际状态</strong></li>
+</ul>
+<p>Kubernetes通过对应的 <strong>控制器</strong>，<strong>不断地使实际状态趋向于您期望的目标状态</strong> </p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">###  kubectl create deployment my-nginx --image=nginx</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">deployment.kubernetes.io/revision:</span> <span class="string">&quot;1&quot;</span></span><br><span class="line">  <span class="attr">creationTimestamp:</span> <span class="string">&quot;2021-04-27T11:37:59Z&quot;</span></span><br><span class="line">  <span class="attr">generation:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">my-nginx</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-nginx</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">default</span></span><br><span class="line">  <span class="attr">resourceVersion:</span> <span class="string">&quot;376418&quot;</span></span><br><span class="line">  <span class="attr">uid:</span> <span class="string">5a47e879-e2e9-40d1-8b02-180031903e8a</span></span><br><span class="line"><span class="attr">spec:</span>  <span class="comment">###期望状态</span></span><br><span class="line">  <span class="attr">progressDeadlineSeconds:</span> <span class="number">600</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span>  <span class="comment">### 副本数量</span></span><br><span class="line">  <span class="attr">revisionHistoryLimit:</span> <span class="number">10</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">my-nginx</span></span><br><span class="line">  <span class="attr">strategy:</span></span><br><span class="line">    <span class="attr">rollingUpdate:</span></span><br><span class="line">      <span class="attr">maxSurge:</span> <span class="number">25</span><span class="string">%</span></span><br><span class="line">      <span class="attr">maxUnavailable:</span> <span class="number">25</span><span class="string">%</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">RollingUpdate</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">creationTimestamp:</span> <span class="literal">null</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">my-nginx</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">nginx</span>   <span class="comment">###使用这个镜像创建容器</span></span><br><span class="line">        <span class="attr">imagePullPolicy:</span> <span class="string">Always</span></span><br><span class="line">        <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">        <span class="attr">resources:</span> &#123;&#125;</span><br><span class="line">        <span class="attr">terminationMessagePath:</span> <span class="string">/dev/termination-log</span></span><br><span class="line">        <span class="attr">terminationMessagePolicy:</span> <span class="string">File</span></span><br><span class="line">      <span class="attr">dnsPolicy:</span> <span class="string">ClusterFirst</span></span><br><span class="line">      <span class="attr">restartPolicy:</span> <span class="string">Always</span></span><br><span class="line">      <span class="attr">schedulerName:</span> <span class="string">default-scheduler</span></span><br><span class="line">      <span class="attr">securityContext:</span> &#123;&#125;</span><br><span class="line">      <span class="attr">terminationGracePeriodSeconds:</span> <span class="number">30</span></span><br><span class="line"><span class="attr">status:</span>  <span class="comment">###当前状态</span></span><br><span class="line">  <span class="attr">availableReplicas:</span> <span class="number">1</span>  <span class="comment">## 当前集群可用的</span></span><br><span class="line">  <span class="attr">conditions:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">lastTransitionTime:</span> <span class="string">&quot;2021-04-27T11:38:17Z&quot;</span></span><br><span class="line">    <span class="attr">lastUpdateTime:</span> <span class="string">&quot;2021-04-27T11:38:17Z&quot;</span></span><br><span class="line">    <span class="attr">message:</span> <span class="string">Deployment</span> <span class="string">has</span> <span class="string">minimum</span> <span class="string">availability.</span></span><br><span class="line">    <span class="attr">reason:</span> <span class="string">MinimumReplicasAvailable</span></span><br><span class="line">    <span class="attr">status:</span> <span class="string">&quot;True&quot;</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">Available</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">lastTransitionTime:</span> <span class="string">&quot;2021-04-27T11:37:59Z&quot;</span></span><br><span class="line">    <span class="attr">lastUpdateTime:</span> <span class="string">&quot;2021-04-27T11:38:17Z&quot;</span></span><br><span class="line">    <span class="attr">message:</span> <span class="string">ReplicaSet</span> <span class="string">&quot;my-nginx-6b74b79f57&quot;</span> <span class="string">has</span> <span class="string">successfully</span> <span class="string">progressed.</span></span><br><span class="line">    <span class="attr">reason:</span> <span class="string">NewReplicaSetAvailable</span></span><br><span class="line">    <span class="attr">status:</span> <span class="string">&quot;True&quot;</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">Progressing</span></span><br><span class="line">  <span class="attr">observedGeneration:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">readyReplicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">1</span></span><br><span class="line">  <span class="attr">updatedReplicas:</span> <span class="number">1</span></span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  <span class="comment">### 最终一致。</span></span><br><span class="line">  <span class="comment">## etcd保存的创建资源期望的状态和最终这个资源的状态要是一致的；spec和status要最终一致</span></span><br><span class="line">  <span class="comment">## 1、kubectl create deployment my-nginx --image=nginx</span></span><br><span class="line">  <span class="comment">## 2、api-server保存etcd，controller-manager最终解析数据，知道集群要my-nginx一份，保存到etcd</span></span><br><span class="line">  <span class="comment">## 3、kubelet就做一件事情，spec状态和最终状态一致</span></span><br><span class="line">  <span class="string">while(true)&#123;</span></span><br><span class="line">    <span class="string">if(my-nginx.replicas</span> <span class="type">!=</span> <span class="string">spec.replicas)</span></span><br><span class="line">   	&#123;</span><br><span class="line">   	   <span class="string">kubelet.startPod();</span></span><br><span class="line">   	&#125;</span><br><span class="line">  <span class="string">&#125;</span></span><br><span class="line"><span class="comment">## </span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="2、描述k8s对象"><a href="#2、描述k8s对象" class="headerlink" title="2、描述k8s对象"></a>2、<strong>描述k8s对象</strong></h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">##自己编写任意资源的yaml都可以创建出他</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">###如何会写任意资源的yaml，比如Pod</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#################编写yaml的黑科技#########################</span></span><br><span class="line"><span class="comment">##  kubectl run my-nginx666 --image=nginx  #启动一个Pod</span></span><br><span class="line"><span class="comment">## 1、kubectl get pod my-nginx666 -oyaml 集群中挑一个同类资源，获取出他的yaml。</span></span><br><span class="line"><span class="comment">## 2、kubectl run my-tomcat --image=tomcat --dry-run -oyaml  干跑一遍</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span>          <span class="comment">#资源类型  kubectl api-resources:可以获取到所有资源</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span>     <span class="comment">#同一个资源有可能有多个版本。看 kubectl api-resources提示的。</span></span><br><span class="line"><span class="attr">metadata:</span>          <span class="comment">#每一个资源定义一些元数据信息</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">run:</span> <span class="string">my-tomcat</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-tomcat</span></span><br><span class="line"><span class="attr">spec:</span>			   <span class="comment">#资源的规格（镜像名、镜像的环境变量信息等等）</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">image:</span> <span class="string">tomcat</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">my-tomcat</span></span><br><span class="line">    <span class="attr">resources:</span> &#123;&#125;</span><br><span class="line">  <span class="attr">dnsPolicy:</span> <span class="string">ClusterFirst</span></span><br><span class="line">  <span class="attr">restartPolicy:</span> <span class="string">Always</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>当您在 Kubernetes 中创建一个对象时，您必须提供</p>
+<ul>
+<li>该对象的 spec 字段，通过该字段描述您期望的 <strong>目标状态</strong></li>
+<li>该对象的一些基本信息，例如名字</li>
+</ul>
+<p>可以使用 kubectl 命令行创建对象，业可以编写 <code>.yaml</code> 格式的文件进行创建</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apps/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Deployment</span>                      </span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-deployment</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span> <span class="comment"># 运行 2 个容器化应用程序副本</span></span><br><span class="line">  <span class="attr">template:</span></span><br><span class="line">    <span class="attr">metadata:</span></span><br><span class="line">      <span class="attr">labels:</span></span><br><span class="line">        <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">spec:</span></span><br><span class="line">      <span class="attr">containers:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">        <span class="attr">image:</span> <span class="string">nginx:1.7.9</span></span><br><span class="line">        <span class="attr">ports:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment">#1、部署</span></span><br><span class="line">kubectl apply -f deployment.yaml</span><br><span class="line"></span><br><span class="line"><span class="comment">#2、移除</span></span><br><span class="line">kubectl delete -f deployment.yaml</span><br></pre></td></tr></table></figure>
+
+
+
+<p>集群中所有的资源，都在那里？</p>
+<p>k8s只依赖一个存储就是etcd。</p>
+<h2 id="3、k8s对象yaml的结构"><a href="#3、k8s对象yaml的结构" class="headerlink" title="3、k8s对象yaml的结构"></a>3、k8s对象yaml的结构</h2><p><img src="../other/%E4%BA%91%E5%8E%9F%E7%94%9F/%E4%BA%91%E5%8E%9F%E7%94%9F/03%E3%80%81Kubernetes.assets/image-20200516133321482.png" alt="image-20200516133321482"></p>
+<p><strong>必填字段</strong></p>
+<p>在上述的 <code>.yaml</code> 文件中，如下字段是必须填写的：</p>
+<ul>
+<li><strong>apiVersion</strong> 用来创建对象时所使用的Kubernetes API版本</li>
+<li><strong>kind</strong> 被创建对象的类型</li>
+<li><strong>metadata</strong> 用于唯一确定该对象的元数据：包括 <code>name</code> 和 <code>namespace</code>，如果 <code>namespace</code> 为空，则默认值为 <code>default</code></li>
+<li><strong>spec</strong> 描述您对该对象的期望状态</li>
+</ul>
+<blockquote>
+<p>不同类型的 Kubernetes，其 <code>spec</code> 对象的格式不同（含有不同的内嵌字段），通过 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/#api-reference">API 手册</a> 可以查看 Kubernetes 对象的字段和描述。例如，假设您想了解 Pod 的 <code>spec</code> 定义，可以在 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/#podspec-v1-core">这里</a>找到，Deployment 的 <code>spec</code> 定义可以在 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.16/#deploymentspec-v1-apps">这里</a> 找到 </p>
+</blockquote>
+<p> <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/">https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.21/</a>  这就是我们以后要完全参照的文档。</p>
+<h2 id="4、管理k8s对象"><a href="#4、管理k8s对象" class="headerlink" title="4、管理k8s对象"></a>4、管理k8s对象</h2><table>
+<thead>
+<tr>
+<th>管理方式</th>
+<th>操作对象</th>
+<th>推荐的环境</th>
+<th>参与编辑的人数</th>
+<th>学习曲线</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>指令性的命令行</td>
+<td>Kubernetes对象;kubectl xxxxx。 cka</td>
+<td>开发环境</td>
+<td>1+</td>
+<td>最低</td>
+</tr>
+<tr>
+<td>指令性的对象配置</td>
+<td>单个 yaml 文件</td>
+<td>生产环境</td>
+<td>1</td>
+<td>适中</td>
+</tr>
+<tr>
+<td>声明式的对象配置</td>
+<td>包含多个 yaml 文件的多个目录。kustomize</td>
+<td>生产环境</td>
+<td>1+</td>
+<td>最高</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>同一个Kubernetes对象应该只使用一种方式管理，否则可能会出现不可预期的结果 </p>
+</blockquote>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment">#1、命令式</span></span><br><span class="line">kubectl run nginx --image nginx</span><br><span class="line"></span><br><span class="line">kubectl create deployment nginx --image nginx</span><br><span class="line"></span><br><span class="line">apply -f ： 没有就创建，有就修改</span><br><span class="line"><span class="comment">#2、指令性</span></span><br><span class="line">- 使用指令性的对象配置（imperative object configuration）时，需要向 kubectl 命令指定具体的操作（create,replace,apply,delete等），可选参数以及至少一个配置文件的名字。配置文件中必须包括一个完整的对象的定义，可以是 yaml 格式，也可以是 json 格式。</span><br><span class="line"></span><br><span class="line"><span class="comment">#创建对象</span></span><br><span class="line">kubectl create -f nginx.yaml</span><br><span class="line"><span class="comment">#删除对象</span></span><br><span class="line">kubectl delete -f nginx.yaml -f redis.yaml</span><br><span class="line"><span class="comment">#替换对象</span></span><br><span class="line">kubectl replace -f nginx.yaml</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#3、声明式</span></span><br><span class="line"><span class="comment">#处理 configs 目录中所有配置文件中的Kubernetes对象，根据情况创建对象、或更新Kubernetes中已经存在的对象。可以先执行 diff 指令查看具体的变更，然后执行 apply 指令执行变更；</span></span><br><span class="line">kubectl diff -f configs/</span><br><span class="line">kubectl apply -f configs/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#递归处理目录中的内容：</span></span><br><span class="line">kubectl diff -R -f configs/</span><br><span class="line">kubectl apply -R -f configs/</span><br><span class="line"></span><br><span class="line"><span class="comment">#移除</span></span><br><span class="line">kubectl delete -f configs/</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="5、对象名称"><a href="#5、对象名称" class="headerlink" title="5、对象名称"></a>5、对象名称</h2><p> Kubernetes REST API 中，所有的对象都是通过 <code>name</code> 和 <code>UID</code> 唯一性确定 </p>
+<p>可以通过 <code>namespace</code> + <code>name</code> 唯一性地确定一个 RESTFUL 对象，例如：</p>
+<figure class="highlight http"><table><tr><td class="code"><pre><span class="line">/api/v1/namespaces/&#123;namespace&#125;/pods/&#123;name&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>Names</strong></p>
+</blockquote>
+<p>同一个名称空间下，同一个类型的对象，可以通过 <code>name</code> 唯一性确定。如果删除该对象之后，可以再重新创建一个同名对象。</p>
+<p>依据命名规则，Kubernetes对象的名字应该：</p>
+<ul>
+<li>最长不超过 253个字符</li>
+<li>必须由小写字母、数字、减号 <code>-</code>、小数点 <code>.</code> 组成</li>
+<li>某些资源类型有更具体的要求</li>
+</ul>
+<p>例如，下面的配置文件定义了一个 name 为 <code>nginx-demo</code> 的 Pod，该 Pod 包含一个 name 为 <code>nginx</code> 的容器：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">nginx-demo</span>  <span class="comment">##pod的名字</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span>     <span class="comment">##容器的名字</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.7.9</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span> <span class="string">UIDs</span></span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p><strong>UID</strong></p>
+</blockquote>
+<p>UID 是由 Kubernetes 系统生成的，唯一标识某个 Kubernetes 对象的字符串。</p>
+<p>Kubernetes集群中，每创建一个对象，都有一个唯一的 UID。用于区分多次创建的同名对象（如前所述，按照名字删除对象后，重新再创建同名对象时，两次创建的对象 name 相同，但是 UID 不同。）</p>
+<h2 id="6、名称空间"><a href="#6、名称空间" class="headerlink" title="6、名称空间"></a>6、名称空间</h2><figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">kubectl get namespaces</span><br><span class="line"></span><br><span class="line">kubectl describe namespaces &lt;name&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">#隔离 mysql mapper.xml--》dao.</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>Kubernetes 安装成功后，默认有初始化了三个名称空间：</p>
+<ul>
+<li><strong>default</strong> 默认名称空间，如果 Kubernetes 对象中不定义 <code>metadata.namespace</code> 字段，该对象将放在此名称空间下</li>
+<li><strong>kube-system</strong> Kubernetes系统创建的对象放在此名称空间下</li>
+<li><strong>kube-public</strong> 此名称空间自动在安装集群是自动创建，并且所有用户都是可以读取的（即使是那些未登录的用户）。主要是为集群预留的，例如，某些情况下，某些Kubernetes对象应该被所有集群用户看到。</li>
+</ul>
+<blockquote>
+<p>名称空间未来如何隔离</p>
+<p>1）、基于环境隔离（prod,test）</p>
+<p>​		prod：部署的所有应用</p>
+<p>​	   test：部署的所有应用</p>
+<p>​        </p>
+<p>2）、基于产品线的名称空间（商城，android，ios，backend）；</p>
+<p>3）、基于团队隔离</p>
+</blockquote>
+<blockquote>
+<p>访问其他名称空间的东西？(名称空间资源隔离，网络不隔离)</p>
+<p>1）、配置直接拿来用。不行</p>
+<p>2）、网络访问，可以。</p>
+<p>Pod-Pod；</p>
+<p>serviceName来访问，找本名称空间的Service负载均衡</p>
+<p><strong>serviceName.名称空间</strong>，可以访问别的名称空间的</p>
+</blockquote>
+<blockquote>
+<p>创建名称空间</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">&lt;名称空间的名字&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line"><span class="attr">creationTimestamp:</span> <span class="literal">null</span></span><br><span class="line"><span class="attr">name:</span> <span class="string">k8s-03</span></span><br><span class="line"><span class="attr">spec:</span> &#123;&#125;</span><br><span class="line"><span class="attr">status:</span> &#123;&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">kubectl create -f ./my-namespace.yaml</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment">#直接用命令</span></span><br><span class="line">kubectl create namespace &lt;名称空间的名字&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">#删除</span></span><br><span class="line">kubectl delete namespaces &lt;名称空间的名字&gt;</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>名称空间的名字必须与 DNS 兼容：</p>
+<ul>
+<li>不能带小数点 <code>.</code></li>
+<li>不能带下划线 <code>_</code></li>
+<li>使用数字、小写字母和减号 <code>-</code> 组成的字符串</li>
+</ul>
+<p> 默认情况下，安装Kubernetes集群时，会初始化一个 <code>default</code> 名称空间，用来将承载那些未指定名称空间的 Pod、Service、Deployment等对象 </p>
+<blockquote>
+<p>为请求设置命名空间</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment">#要为当前请求设置命名空间，请使用 --namespace 参数。</span></span><br><span class="line"></span><br><span class="line">kubectl run nginx --image=nginx --namespace=&lt;insert-namespace-name-here&gt;</span><br><span class="line">kubectl get pods --namespace=&lt;insert-namespace-name-here&gt;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#在对象yaml中使用命名空间</span></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">   <span class="attr">name:</span> <span class="string">nginx-demo</span>  <span class="comment">##pod的名字</span></span><br><span class="line">   <span class="attr">namespace:</span> <span class="string">default</span> <span class="comment">#不写就是default</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">   <span class="attr">containers:</span></span><br><span class="line">     <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span>     <span class="comment">##容器的名字</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">nginx:1.7.9</span></span><br><span class="line">     <span class="attr">ports:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+<p>当您创建一个 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/user-guide/services">Service</a> 时，Kubernetes 会创建一个相应的 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/">DNS 条目</a>。</p>
+<p>该条目的形式是 <service-name>.<namespace-name>.svc.cluster.local ，这意味着如果容器只使用 &#96;&#96;，它将被解析到本地命名空间的服务。这对于跨多个命名空间（如开发、分级和生产）使用相同的配置非常有用。如果您希望跨命名空间访问，则需要使用完全限定域名（FQDN）。</namespace-name></service-name></p>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 创建Pod  kind:Pod</span></span><br><span class="line"><span class="string">k8s底层最小的部署单元是Pod。Service，Deploy，ReplicaSet</span></span><br><span class="line"><span class="comment"># Deploy:直接指定Pod模板（） kind: Deploy</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>并非所有对象都在命名空间中</strong></p>
+<p>大多数 kubernetes 资源（例如 Pod、Service、副本控制器等）都位于某些命名空间中。但是命名空间资源本身并不在命名空间中。而且底层资源，例如 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/admin/node">nodes</a> 和持久化卷不属于任何命名空间。</p>
+<p>查看哪些 Kubernetes 资源在命名空间中，哪些不在命名空间中：</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># In a namespace</span></span><br><span class="line">kubectl api-resources --namespaced=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Not in a namespace</span></span><br><span class="line">kubectl api-resources --namespaced=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="7-、标签和选择器"><a href="#7-、标签和选择器" class="headerlink" title="7 、标签和选择器"></a>7 、标签和选择器</h2><p> 标签（Label）是附加在Kubernetes对象上的一组名值对，其意图是按照对用户有意义的方式来标识Kubernetes对象，同时，又不对Kubernetes的核心逻辑产生影响。标签可以用来组织和选择一组Kubernetes对象。您可以在创建Kubernetes对象时为其添加标签，也可以在创建以后再为其添加标签。每个Kubernetes对象可以有多个标签，同一个对象的标签的 Key 必须唯一，例如： </p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">key1:</span> <span class="string">value1</span></span><br><span class="line">    <span class="attr">key2:</span> <span class="string">value2</span></span><br></pre></td></tr></table></figure>
+
+<p> 使用标签（Label）可以高效地查询和监听Kubernetes对象，在Kubernetes界面工具（如 Kubenetes Dashboard 或 Kuboard）和 kubectl 中，标签的使用非常普遍。那些非标识性的信息应该记录在 <strong>注解（annotation）</strong></p>
+<blockquote>
+<p>为什么要使用标签</p>
+</blockquote>
+<p>使用标签，用户可以按照自己期望的形式组织 Kubernetes 对象之间的结构，而无需对 Kubernetes 有任何修改。</p>
+<p>应用程序的部署或者批处理程序的部署通常都是多维度的（例如，多个高可用分区、多个程序版本、多个微服务分层）。管理这些对象时，很多时候要针对某一个维度的条件做整体操作，例如，将某个版本的程序整体删除，这种情况下，如果用户能够事先规划好标签的使用，再通过标签进行选择，就会非常地便捷。</p>
+<p>标签的例子有：</p>
+<ul>
+<li><code>release: stable</code>、<code>release: canary</code></li>
+<li><code>environment: dev</code>、<code>environment: qa</code>、<code>environment: production</code></li>
+<li><code>tier: frontend</code>、<code>tier: backend</code>、<code>tier: cache</code></li>
+<li><code>partition: customerA</code>、<code>partition: customerB</code></li>
+<li><code>track: daily</code>、<code>track: weekly</code></li>
+</ul>
+<p>上面只是一些使用比较普遍的标签，您可以根据您自己的情况建立合适的使用标签的约定。</p>
+<blockquote>
+<p>句法和字符集</p>
+</blockquote>
+<p>标签是一组名值对（key&#x2F;value pair）。标签的 key 可以有两个部分：可选的前缀和标签名，通过 <code>/</code> 分隔。</p>
+<ul>
+<li>标签名：<ul>
+<li>标签名部分是必须的</li>
+<li>不能多于 63 个字符</li>
+<li>必须由字母、数字开始和结尾</li>
+<li>可以包含字母、数字、减号<code>-</code>、下划线<code>_</code>、小数点<code>.</code></li>
+</ul>
+</li>
+<li>标签前缀：<ul>
+<li>标签前缀部分是可选的</li>
+<li>如果指定，必须是一个DNS的子域名，例如：k8s.eip.work</li>
+<li>不能多于 253 个字符</li>
+<li>使用 <code>/</code> 和标签名分隔</li>
+</ul>
+</li>
+</ul>
+<p>如果省略标签前缀，则标签的 key 将被认为是专属于用户的。Kubernetes的系统组件（例如，kube-scheduler、kube-controller-manager、kube-apiserver、kubectl 或其他第三方组件）向用户的Kubernetes对象添加标签时，必须指定一个前缀。<code>kubernetes.io/</code> 和 <code>k8s.io/</code> 这两个前缀是 Kubernetes 核心组件预留的。</p>
+<p>标签的 value 必须：</p>
+<ul>
+<li>不能多于 63 个字符</li>
+<li>可以为空字符串</li>
+<li>如果不为空，则<ul>
+<li>必须由字母、数字开始和结尾</li>
+<li>可以包含字母、数字、减号<code>-</code>、下划线<code>_</code>、小数点<code>.</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">label-demo</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">environment:</span> <span class="string">production</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx:1.7.9</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">containerPort:</span> <span class="number">80</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>标签选择器</strong></p>
+<p>通常来讲，会有多个Kubernetes对象包含相同的标签。通过使用标签选择器（label selector），用户&#x2F;客户端可以选择一组对象。标签选择器（label selector）是 Kubernetes 中最主要的分类和筛选手段。</p>
+<p>Kubernetes api server支持两种形式的标签选择器，<code>equality-based 基于等式的</code> 和 <code>set-based 基于集合的</code>。标签选择器可以包含多个条件，并使用逗号分隔，此时只有满足所有条件的 Kubernetes 对象才会被选中</p>
+<blockquote>
+<p>使用基于等式的选择方式,可以使用三种操作符 &#x3D;、&#x3D;&#x3D;、!&#x3D;。前两个操作符含义是一样的，都代表相等，后一个操作符代表不相等</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash"></span></span><br><span class="line"><span class="language-bash">kubectl get pods -l environment=production,tier=frontend</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">选择了标签名为 `environment` 且 标签值为 `production` 的Kubernetes对象</span></span><br><span class="line">environment = production</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">选择了标签名为 `tier` 且标签值不等于 `frontend` 的对象，以及不包含标签 `tier` 的对象</span></span><br><span class="line">tier != frontend</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用基于集合的选择方式</p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Set-based 标签选择器可以根据标签名的一组值进行筛选。支持的操作符有三种：<span class="keyword">in</span>、notin、exists。例如</span><br><span class="line"><span class="comment"># 选择所有的包含 `environment` 标签且值为 `production` 或 `qa` 的对象</span></span><br><span class="line">environment <span class="keyword">in</span> (production, qa)</span><br><span class="line"><span class="comment"># 选择所有的 `tier` 标签不为 `frontend` 和 `backend`的对象，或不含 `tier` 标签的对象</span></span><br><span class="line">tier notin (frontend, backend)</span><br><span class="line"><span class="comment"># 选择所有包含 `partition` 标签的对象</span></span><br><span class="line">partition</span><br><span class="line"><span class="comment"># 选择所有不包含 `partition` 标签的对象</span></span><br><span class="line">!partition</span><br><span class="line"></span><br><span class="line"><span class="comment"># 选择包含 `partition` 标签（不检查标签值）且 `environment` 不是 `qa` 的对象</span></span><br><span class="line">partition,environment notin (qa)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">kubectl get pods -l <span class="string">&#x27;environment in (production),tier in (frontend)&#x27;</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment">#Job、Deployment、ReplicaSet 和 DaemonSet 同时支持基于等式的选择方式和基于集合的选择方式。例如：</span></span><br><span class="line"><span class="attr">selector:</span></span><br><span class="line">  <span class="attr">matchLabels:</span></span><br><span class="line">    <span class="attr">component:</span> <span class="string">redis</span></span><br><span class="line">  <span class="attr">matchExpressions:</span></span><br><span class="line">    <span class="bullet">-</span> &#123;<span class="attr">key:</span> <span class="string">tier</span>, <span class="attr">operator:</span> <span class="string">In</span>, <span class="attr">values:</span> [<span class="string">cache</span>]&#125;</span><br><span class="line">    <span class="bullet">-</span> &#123;<span class="attr">key:</span> <span class="string">environment</span>, <span class="attr">operator:</span> <span class="string">NotIn</span>, <span class="attr">values:</span> [<span class="string">dev</span>]&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># matchLabels 是一个 &#123;key,value&#125; 组成的 map。map 中的一个 &#123;key,value&#125; 条目相当于 matchExpressions 中的一个元素，其 key 为 map 的 key，operator 为 In， values 数组则只包含 value 一个元素。matchExpression 等价于基于集合的选择方式，支持的 operator 有 In、NotIn、Exists 和 DoesNotExist。当 operator 为 In 或 NotIn 时，values 数组不能为空。所有的选择条件都以 AND 的形式合并计算，即所有的条件都满足才可以算是匹配</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_">#</span><span class="language-bash">添加或者修改标签</span></span><br><span class="line">kubectl label --help</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Update pod <span class="string">&#x27;foo&#x27;</span> with the label <span class="string">&#x27;unhealthy&#x27;</span> and the value <span class="string">&#x27;true&#x27;</span>.</span></span><br><span class="line">kubectl label pods foo unhealthy=true</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Update pod <span class="string">&#x27;foo&#x27;</span> with the label <span class="string">&#x27;status&#x27;</span> and the value <span class="string">&#x27;unhealthy&#x27;</span>, overwriting any existing value.</span></span><br><span class="line">kubectl label --overwrite pods foo status=unhealthy</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Update all pods <span class="keyword">in</span> the namespace</span></span><br><span class="line">kubectl label pods --all status=unhealthy</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Update a pod identified by the <span class="built_in">type</span> and name <span class="keyword">in</span> <span class="string">&quot;pod.json&quot;</span></span></span><br><span class="line">kubectl label -f pod.json status=unhealthy</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Update pod <span class="string">&#x27;foo&#x27;</span> only <span class="keyword">if</span> the resource is unchanged from version 1.</span></span><br><span class="line">kubectl label pods foo status=unhealthy --resource-version=1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Update pod <span class="string">&#x27;foo&#x27;</span> by removing a label named <span class="string">&#x27;bar&#x27;</span> <span class="keyword">if</span> it exists.</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">Does not require the --overwrite flag.</span></span><br><span class="line">kubectl label pods foo bar-</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="8、注解annotation"><a href="#8、注解annotation" class="headerlink" title="8、注解annotation"></a>8、注解annotation</h2><p> 注解（annotation）可以用来向 Kubernetes 对象的 <code>metadata.annotations</code> 字段添加任意的信息。Kubernetes 的客户端或者自动化工具可以存取这些信息以实现其自定义的逻辑。 </p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">key1:</span> <span class="string">value1</span></span><br><span class="line">    <span class="attr">key2:</span> <span class="string">value2</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="9、字段选择器"><a href="#9、字段选择器" class="headerlink" title="9、字段选择器"></a>9、字段选择器</h2><p><em>字段选择器</em>（<em>Field selectors</em>）允许您根据一个或多个资源字段的值<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/overview/working-with-objects/kubernetes-objects">筛选 Kubernetes 资源</a>。 下面是一些使用字段选择器查询的例子：</p>
+<ul>
+<li><code>metadata.name=my-service</code></li>
+<li><code>metadata.namespace!=default</code></li>
+<li><code>status.phase=Pending</code></li>
+</ul>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">kubectl get pods --field-selector status.phase=Running</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<blockquote>
+<p>三个命令玩转所有的yaml写法‘</p>
+<ul>
+<li><p>kubectl get  xxx   -oyaml</p>
+</li>
+<li><p>kubectl create deploy xxxxx  –dry-run-client -oyaml</p>
+</li>
+<li><p>kubectl explain pod.spec.xx</p>
+</li>
+</ul>
+</blockquote>
+<p>写完yaml  kubectl apply -f 即可</p>
+<h2 id="10、给vscode安装插件"><a href="#10、给vscode安装插件" class="headerlink" title="10、给vscode安装插件"></a>10、给vscode安装插件</h2><p>搜索kubernetes ，<code>安装 yaml</code>和<code>kubernetes template</code>插件即可</p>
+<p>idea也有kubernetes插件</p>
+<h2 id="11、认识kubectl和kubelet"><a href="#11、认识kubectl和kubelet" class="headerlink" title="11、认识kubectl和kubelet"></a>11、认识kubectl和kubelet</h2><ul>
+<li>kubeadm安装的集群。二进制后来就是  yum install etcd  api-server<ul>
+<li>认识核心文件夹  &#x2F;etc&#x2F;kubernetes .   以Pod方式安装的核心组件。<ul>
+<li>etcd，api-server，scheduler。（安装k8s的时候，yum kubeadm <strong>kubelet</strong> kubectl）</li>
+</ul>
+</li>
+<li>回顾集群安装的时候，<a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/reference/kubectl/overview/">为什么只有master节点的kubectl可以操作集群</a></li>
+<li>kubelet额外参数配置  <strong>&#x2F;etc&#x2F;sysconfig&#x2F;kubelet</strong>；kubelet配置位置 &#x2F;var&#x2F;lib&#x2F;kubelet&#x2F;config.yaml</li>
+</ul>
+</li>
+</ul>
+<p>kubectl的所有命令参考：</p>
+<p>命令参考：<a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands">https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands</a></p>
+<p>pdf命令实战：<a target="_blank" rel="noopener" href="https://github.com/dennyzhang/cheatsheet-kubernetes-A4/blob/master/cheatsheet-kubernetes-A4.pdf">https://github.com/dennyzhang/cheatsheet-kubernetes-A4/blob/master/cheatsheet-kubernetes-A4.pdf</a></p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">Basic Commands (Beginner): 初学者掌握的命令</span><br><span class="line">  create        Create a resource from a file or from stdin.</span><br><span class="line">  expose        Take a replication controller, service, deployment or pod and expose it as a new</span><br><span class="line">Kubernetes Service</span><br><span class="line">  run           Run a particular image on the cluster</span><br><span class="line">  <span class="built_in">set</span>           Set specific features on objects</span><br><span class="line"></span><br><span class="line">Basic Commands (Intermediate): 基础命令</span><br><span class="line">  explain       Documentation of resources</span><br><span class="line">  get           Display one or many resources</span><br><span class="line">  edit          Edit a resource on the server</span><br><span class="line">  delete        Delete resources by filenames, stdin, resources and names, or by resources and label</span><br><span class="line">selector</span><br><span class="line"></span><br><span class="line">Deploy Commands:   <span class="comment">#部署用的命令</span></span><br><span class="line">  rollout       Manage the rollout of a resource</span><br><span class="line">  scale         Set a new size <span class="keyword">for</span> a Deployment, ReplicaSet or Replication Controller</span><br><span class="line">  autoscale     Auto-scale a Deployment, ReplicaSet, StatefulSet, or ReplicationController</span><br><span class="line"></span><br><span class="line">Cluster Management Commands:  <span class="comment">#集群管理的命令</span></span><br><span class="line">  certificate   Modify certificate resources.</span><br><span class="line">  cluster-info  Display cluster info</span><br><span class="line">  top           Display Resource (CPU/Memory) usage.</span><br><span class="line">  cordon        Mark node as unschedulable</span><br><span class="line">  uncordon      Mark node as schedulable</span><br><span class="line">  drain         Drain node <span class="keyword">in</span> preparation <span class="keyword">for</span> maintenance</span><br><span class="line">  taint         Update the taints on one or more nodes</span><br><span class="line"></span><br><span class="line">Troubleshooting and Debugging Commands:  <span class="comment"># debug的命令</span></span><br><span class="line">  describe      Show details of a specific resource or group of resources</span><br><span class="line">  logs          Print the logs <span class="keyword">for</span> a container <span class="keyword">in</span> a pod</span><br><span class="line">  attach        Attach to a running container</span><br><span class="line">  <span class="built_in">exec</span>          Execute a <span class="built_in">command</span> <span class="keyword">in</span> a container</span><br><span class="line">  port-forward  Forward one or more <span class="built_in">local</span> ports to a pod</span><br><span class="line">  proxy         Run a proxy to the Kubernetes API server</span><br><span class="line">  <span class="built_in">cp</span>            Copy files and directories to and from containers.</span><br><span class="line">  auth          Inspect authorization</span><br><span class="line">  debug         Create debugging sessions <span class="keyword">for</span> troubleshooting workloads and nodes</span><br><span class="line"></span><br><span class="line">Advanced Commands:  <span class="comment"># 高阶命令</span></span><br><span class="line">  diff          Diff live version against would-be applied version</span><br><span class="line">  apply         Apply a configuration to a resource by filename or stdin</span><br><span class="line">  patch         Update field(s) of a resource</span><br><span class="line">  replace       Replace a resource by filename or stdin</span><br><span class="line">  <span class="built_in">wait</span>          Experimental: Wait <span class="keyword">for</span> a specific condition on one or many resources.</span><br><span class="line">  kustomize     Build a kustomization target from a directory or URL.</span><br><span class="line"></span><br><span class="line">Settings Commands:  <span class="comment"># 设置</span></span><br><span class="line">  label         Update the labels on a resource</span><br><span class="line">  annotate      Update the annotations on a resource</span><br><span class="line">  completion    Output shell completion code <span class="keyword">for</span> the specified shell (bash or zsh) <span class="comment">#</span></span><br><span class="line"></span><br><span class="line">Other Commands:  <span class="comment">#其他</span></span><br><span class="line">  api-resources Print the supported API resources on the server</span><br><span class="line">  api-versions  Print the supported API versions on the server, <span class="keyword">in</span> the form of <span class="string">&quot;group/version&quot;</span></span><br><span class="line">  config        Modify kubeconfig files</span><br><span class="line">  plugin        Provides utilities <span class="keyword">for</span> interacting with plugins.</span><br><span class="line">  version       Print the client and server version information</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="12、自动补全"><a href="#12、自动补全" class="headerlink" title="12、自动补全"></a>12、自动补全</h2><p><a target="_blank" rel="noopener" href="https://kubernetes.io/zh/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/">https://kubernetes.io/zh/docs/tasks/tools/included/optional-kubectl-configs-bash-linux/</a></p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">yum install bash-completion</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 自动补全</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;source &lt;(kubectl completion bash)&#x27;</span> &gt;&gt;~/.bashrc</span><br><span class="line">kubectl completion bash &gt;/etc/bash_completion.d/kubectl</span><br><span class="line"><span class="built_in">source</span> /usr/share/bash-completion/bash_completion</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h1 id="三、万物基础-容器"><a href="#三、万物基础-容器" class="headerlink" title="三、万物基础-容器"></a>三、万物基础-容器</h1><blockquote>
+<p>思考：我们在k8s里面的容器和docker的容器有什么异同？</p>
+</blockquote>
+<p>k8s的<strong>Pod</strong>是最小单位，Pod中容器的配置需要注意以下常用的</p>
+<p>Pod里面的容器内容可以写的东西</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">args</span>	<span class="string">&lt;[]string&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="string">command</span>	<span class="string">&lt;[]string&gt;</span></span><br><span class="line">  <span class="string">Entrypoint</span> <span class="string">array.</span> <span class="string">Not</span> <span class="string">executed</span> <span class="string">within</span> <span class="string">a</span> <span class="string">shell.</span> <span class="string">The</span> <span class="string">docker</span> <span class="string">image&#x27;s</span></span><br><span class="line">  <span class="string">ENTRYPOINT</span> <span class="string">is</span> <span class="string">used</span> <span class="string">if</span> <span class="string">this</span> <span class="string">is</span> <span class="string">not</span> <span class="string">provided.</span> <span class="string">Variable</span> <span class="string">references</span> <span class="string">$(VAR_NAME)</span></span><br><span class="line">  <span class="string">are</span> <span class="string">expanded</span> <span class="string">using</span> <span class="string">the</span> <span class="string">container&#x27;s</span> <span class="string">environment.</span> <span class="string">If</span> <span class="string">a</span> <span class="string">variable</span> <span class="string">cannot</span> <span class="string">be</span></span><br><span class="line">  <span class="string">resolved,</span> <span class="string">the</span> <span class="string">reference</span> <span class="string">in</span> <span class="string">the</span> <span class="string">input</span> <span class="string">string</span> <span class="string">will</span> <span class="string">be</span> <span class="string">unchanged.</span> <span class="string">The</span></span><br><span class="line">  <span class="string">$(VAR_NAME)</span> <span class="string">syntax</span> <span class="string">can</span> <span class="string">be</span> <span class="string">escaped</span> <span class="string">with</span> <span class="string">a</span> <span class="string">double</span> <span class="string">$$,</span> <span class="attr">ie:</span> <span class="string">$$(VAR_NAME).</span></span><br><span class="line">  <span class="string">Escaped</span> <span class="string">references</span> <span class="string">will</span> <span class="string">never</span> <span class="string">be</span> <span class="string">expanded,</span> <span class="string">regardless</span> <span class="string">of</span> <span class="string">whether</span> <span class="string">the</span></span><br><span class="line">  <span class="attr">variable exists or not. Cannot be updated. More info:</span></span><br><span class="line">  <span class="string">https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell</span></span><br><span class="line"></span><br><span class="line"><span class="string">env</span>	<span class="string">&lt;[]Object&gt;</span></span><br><span class="line">  <span class="string">容器要用的环境变量</span></span><br><span class="line"></span><br><span class="line"><span class="string">envFrom</span>	<span class="string">&lt;[]Object&gt;</span></span><br><span class="line">  <span class="string">List</span> <span class="string">of</span> <span class="string">sources</span> <span class="string">to</span> <span class="string">populate</span> <span class="string">environment</span> <span class="string">variables</span> <span class="string">in</span> <span class="string">the</span> <span class="string">container.</span> <span class="string">The</span></span><br><span class="line">  <span class="string">keys</span> <span class="string">defined</span> <span class="string">within</span> <span class="string">a</span> <span class="string">source</span> <span class="string">must</span> <span class="string">be</span> <span class="string">a</span> <span class="string">C_IDENTIFIER.</span> <span class="string">All</span> <span class="string">invalid</span> <span class="string">keys</span> <span class="string">will</span></span><br><span class="line">  <span class="string">be</span> <span class="string">reported</span> <span class="string">as</span> <span class="string">an</span> <span class="string">event</span> <span class="string">when</span> <span class="string">the</span> <span class="string">container</span> <span class="string">is</span> <span class="string">starting.</span> <span class="string">When</span> <span class="string">a</span> <span class="string">key</span> <span class="string">exists</span></span><br><span class="line">  <span class="string">in</span> <span class="string">multiple</span> <span class="string">sources,</span> <span class="string">the</span> <span class="string">value</span> <span class="string">associated</span> <span class="string">with</span> <span class="string">the</span> <span class="string">last</span> <span class="string">source</span> <span class="string">will</span> <span class="string">take</span></span><br><span class="line">  <span class="string">precedence.</span> <span class="string">Values</span> <span class="string">defined</span> <span class="string">by</span> <span class="string">an</span> <span class="string">Env</span> <span class="string">with</span> <span class="string">a</span> <span class="string">duplicate</span> <span class="string">key</span> <span class="string">will</span> <span class="string">take</span></span><br><span class="line">  <span class="string">precedence.</span> <span class="string">Cannot</span> <span class="string">be</span> <span class="string">updated.</span></span><br><span class="line"></span><br><span class="line"><span class="string">image</span>	<span class="string">&lt;string&gt;</span></span><br><span class="line"> 	<span class="string">写镜像的名字</span></span><br><span class="line"></span><br><span class="line"><span class="string">imagePullPolicy</span>	<span class="string">&lt;string&gt;</span></span><br><span class="line">     <span class="string">下载策略：</span> </span><br><span class="line">     <span class="string">Always：总是去下载：</span> <span class="string">【默认】</span>  </span><br><span class="line">         <span class="string">先看网上有没有，有了就下载，（本机也有，docker就相当于不用下载了）</span></span><br><span class="line">     <span class="string">Never：总不去下载，一定保证当前Pod所在的机器有这个镜像</span> <span class="string">；直接看本机</span></span><br><span class="line">     <span class="string">IfNotPresent：如果本机没有就去下载；先看本机，再看远程</span></span><br><span class="line"></span><br><span class="line"><span class="string">lifecycle</span>	<span class="string">&lt;Object&gt;</span></span><br><span class="line">   <span class="string">生命周期钩子</span></span><br><span class="line"></span><br><span class="line"><span class="string">livenessProbe</span>	<span class="string">&lt;Object&gt;</span></span><br><span class="line">  <span class="string">Periodic</span> <span class="string">probe</span> <span class="string">of</span> <span class="string">container</span> <span class="string">liveness.</span> <span class="string">Container</span> <span class="string">will</span> <span class="string">be</span> <span class="string">restarted</span> <span class="string">if</span> <span class="string">the</span></span><br><span class="line">  <span class="attr">probe fails. Cannot be updated. More info:</span></span><br><span class="line">  <span class="string">https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes</span></span><br><span class="line"></span><br><span class="line"><span class="string">name</span>	<span class="string">&lt;string&gt;</span> <span class="string">-required-</span></span><br><span class="line">		<span class="string">容器的名字</span></span><br><span class="line"></span><br><span class="line"><span class="string">ports</span>	<span class="string">&lt;[]Object&gt;</span></span><br><span class="line">   <span class="string">端口：</span></span><br><span class="line"></span><br><span class="line"><span class="string">readinessProbe</span>	<span class="string">&lt;Object&gt;</span></span><br><span class="line">  <span class="string">Periodic</span> <span class="string">probe</span> <span class="string">of</span> <span class="string">container</span> <span class="string">service</span> <span class="string">readiness.</span> <span class="string">Container</span> <span class="string">will</span> <span class="string">be</span> <span class="string">removed</span></span><br><span class="line">  <span class="attr">from service endpoints if the probe fails. Cannot be updated. More info:</span></span><br><span class="line">  <span class="string">https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes</span></span><br><span class="line"></span><br><span class="line"><span class="string">resources</span>	<span class="string">&lt;Object&gt;</span></span><br><span class="line">  <span class="attr">Compute Resources required by this container. Cannot be updated. More info:</span></span><br><span class="line">  <span class="string">https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/</span></span><br><span class="line"></span><br><span class="line"><span class="string">securityContext</span>	<span class="string">&lt;Object&gt;</span></span><br><span class="line">  <span class="attr">Security options the pod should run with. More info:</span></span><br><span class="line">  <span class="attr">https://kubernetes.io/docs/concepts/policy/security-context/ More info:</span></span><br><span class="line">  <span class="string">https://kubernetes.io/docs/tasks/configure-pod-container/security-context/</span></span><br><span class="line"></span><br><span class="line"><span class="string">startupProbe</span>	<span class="string">&lt;Object&gt;</span></span><br><span class="line">  <span class="string">StartupProbe</span> <span class="string">indicates</span> <span class="string">that</span> <span class="string">the</span> <span class="string">Pod</span> <span class="string">has</span> <span class="string">successfully</span> <span class="string">initialized.</span> <span class="string">If</span></span><br><span class="line">  <span class="string">specified,</span> <span class="literal">no</span> <span class="string">other</span> <span class="string">probes</span> <span class="string">are</span> <span class="string">executed</span> <span class="string">until</span> <span class="string">this</span> <span class="string">completes</span> <span class="string">successfully.</span></span><br><span class="line">  <span class="string">If</span> <span class="string">this</span> <span class="string">probe</span> <span class="string">fails,</span> <span class="string">the</span> <span class="string">Pod</span> <span class="string">will</span> <span class="string">be</span> <span class="string">restarted,</span> <span class="string">just</span> <span class="string">as</span> <span class="string">if</span> <span class="string">the</span></span><br><span class="line">  <span class="string">livenessProbe</span> <span class="string">failed.</span> <span class="string">This</span> <span class="string">can</span> <span class="string">be</span> <span class="string">used</span> <span class="string">to</span> <span class="string">provide</span> <span class="string">different</span> <span class="string">probe</span></span><br><span class="line">  <span class="string">parameters</span> <span class="string">at</span> <span class="string">the</span> <span class="string">beginning</span> <span class="string">of</span> <span class="string">a</span> <span class="string">Pod&#x27;s</span> <span class="string">lifecycle,</span> <span class="string">when</span> <span class="string">it</span> <span class="string">might</span> <span class="string">take</span> <span class="string">a</span> <span class="string">long</span></span><br><span class="line">  <span class="string">time</span> <span class="string">to</span> <span class="string">load</span> <span class="string">data</span> <span class="string">or</span> <span class="string">warm</span> <span class="string">a</span> <span class="string">cache,</span> <span class="string">than</span> <span class="string">during</span> <span class="string">steady-state</span> <span class="string">operation.</span> <span class="string">This</span></span><br><span class="line">  <span class="attr">cannot be updated. More info:</span></span><br><span class="line">  <span class="string">https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes</span></span><br><span class="line"></span><br><span class="line"><span class="string">stdin</span>	<span class="string">&lt;boolean&gt;</span></span><br><span class="line">  <span class="string">Whether</span> <span class="string">this</span> <span class="string">container</span> <span class="string">should</span> <span class="string">allocate</span> <span class="string">a</span> <span class="string">buffer</span> <span class="string">for</span> <span class="string">stdin</span> <span class="string">in</span> <span class="string">the</span> <span class="string">container</span></span><br><span class="line">  <span class="string">runtime.</span> <span class="string">If</span> <span class="string">this</span> <span class="string">is</span> <span class="string">not</span> <span class="string">set,</span> <span class="string">reads</span> <span class="string">from</span> <span class="string">stdin</span> <span class="string">in</span> <span class="string">the</span> <span class="string">container</span> <span class="string">will</span> <span class="string">always</span></span><br><span class="line">  <span class="string">result</span> <span class="string">in</span> <span class="string">EOF.</span> <span class="string">Default</span> <span class="string">is</span> <span class="string">false.</span></span><br><span class="line"></span><br><span class="line"><span class="string">stdinOnce</span>	<span class="string">&lt;boolean&gt;</span></span><br><span class="line">  <span class="string">Whether</span> <span class="string">the</span> <span class="string">container</span> <span class="string">runtime</span> <span class="string">should</span> <span class="string">close</span> <span class="string">the</span> <span class="string">stdin</span> <span class="string">channel</span> <span class="string">after</span> <span class="string">it</span> <span class="string">has</span></span><br><span class="line">  <span class="string">been</span> <span class="string">opened</span> <span class="string">by</span> <span class="string">a</span> <span class="string">single</span> <span class="string">attach.</span> <span class="string">When</span> <span class="string">stdin</span> <span class="string">is</span> <span class="literal">true</span> <span class="string">the</span> <span class="string">stdin</span> <span class="string">stream</span> <span class="string">will</span></span><br><span class="line">  <span class="string">remain</span> <span class="string">open</span> <span class="string">across</span> <span class="string">multiple</span> <span class="string">attach</span> <span class="string">sessions.</span> <span class="string">If</span> <span class="string">stdinOnce</span> <span class="string">is</span> <span class="string">set</span> <span class="string">to</span> <span class="literal">true</span><span class="string">,</span></span><br><span class="line">  <span class="string">stdin</span> <span class="string">is</span> <span class="string">opened</span> <span class="string">on</span> <span class="string">container</span> <span class="string">start,</span> <span class="string">is</span> <span class="string">empty</span> <span class="string">until</span> <span class="string">the</span> <span class="string">first</span> <span class="string">client</span></span><br><span class="line">  <span class="string">attaches</span> <span class="string">to</span> <span class="string">stdin,</span> <span class="string">and</span> <span class="string">then</span> <span class="string">remains</span> <span class="string">open</span> <span class="string">and</span> <span class="string">accepts</span> <span class="string">data</span> <span class="string">until</span> <span class="string">the</span> <span class="string">client</span></span><br><span class="line">  <span class="string">disconnects,</span> <span class="string">at</span> <span class="string">which</span> <span class="string">time</span> <span class="string">stdin</span> <span class="string">is</span> <span class="string">closed</span> <span class="string">and</span> <span class="string">remains</span> <span class="string">closed</span> <span class="string">until</span> <span class="string">the</span></span><br><span class="line">  <span class="string">container</span> <span class="string">is</span> <span class="string">restarted.</span> <span class="string">If</span> <span class="string">this</span> <span class="string">flag</span> <span class="string">is</span> <span class="literal">false</span><span class="string">,</span> <span class="string">a</span> <span class="string">container</span> <span class="string">processes</span> <span class="string">that</span></span><br><span class="line">  <span class="string">reads</span> <span class="string">from</span> <span class="string">stdin</span> <span class="string">will</span> <span class="string">never</span> <span class="string">receive</span> <span class="string">an</span> <span class="string">EOF.</span> <span class="string">Default</span> <span class="string">is</span> <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="string">terminationMessagePath</span>	<span class="string">&lt;string&gt;</span></span><br><span class="line">  <span class="attr">Optional:</span> <span class="string">Path</span> <span class="string">at</span> <span class="string">which</span> <span class="string">the</span> <span class="string">file</span> <span class="string">to</span> <span class="string">which</span> <span class="string">the</span> <span class="string">container&#x27;s</span> <span class="string">termination</span></span><br><span class="line">  <span class="string">message</span> <span class="string">will</span> <span class="string">be</span> <span class="string">written</span> <span class="string">is</span> <span class="string">mounted</span> <span class="string">into</span> <span class="string">the</span> <span class="string">container&#x27;s</span> <span class="string">filesystem.</span> <span class="string">Message</span></span><br><span class="line">  <span class="string">written</span> <span class="string">is</span> <span class="string">intended</span> <span class="string">to</span> <span class="string">be</span> <span class="string">brief</span> <span class="string">final</span> <span class="string">status,</span> <span class="string">such</span> <span class="string">as</span> <span class="string">an</span> <span class="string">assertion</span> <span class="string">failure</span></span><br><span class="line">  <span class="string">message.</span> <span class="string">Will</span> <span class="string">be</span> <span class="string">truncated</span> <span class="string">by</span> <span class="string">the</span> <span class="string">node</span> <span class="string">if</span> <span class="string">greater</span> <span class="string">than</span> <span class="number">4096 </span><span class="string">bytes.</span> <span class="string">The</span></span><br><span class="line">  <span class="string">total</span> <span class="string">message</span> <span class="string">length</span> <span class="string">across</span> <span class="string">all</span> <span class="string">containers</span> <span class="string">will</span> <span class="string">be</span> <span class="string">limited</span> <span class="string">to</span> <span class="string">12kb.</span></span><br><span class="line">  <span class="string">Defaults</span> <span class="string">to</span> <span class="string">/dev/termination-log.</span> <span class="string">Cannot</span> <span class="string">be</span> <span class="string">updated.</span></span><br><span class="line"></span><br><span class="line"><span class="string">terminationMessagePolicy</span>	<span class="string">&lt;string&gt;</span></span><br><span class="line">  <span class="string">Indicate</span> <span class="string">how</span> <span class="string">the</span> <span class="string">termination</span> <span class="string">message</span> <span class="string">should</span> <span class="string">be</span> <span class="string">populated.</span> <span class="string">File</span> <span class="string">will</span> <span class="string">use</span> <span class="string">the</span></span><br><span class="line">  <span class="string">contents</span> <span class="string">of</span> <span class="string">terminationMessagePath</span> <span class="string">to</span> <span class="string">populate</span> <span class="string">the</span> <span class="string">container</span> <span class="string">status</span> <span class="string">message</span></span><br><span class="line">  <span class="string">on</span> <span class="string">both</span> <span class="string">success</span> <span class="string">and</span> <span class="string">failure.</span> <span class="string">FallbackToLogsOnError</span> <span class="string">will</span> <span class="string">use</span> <span class="string">the</span> <span class="string">last</span> <span class="string">chunk</span></span><br><span class="line">  <span class="string">of</span> <span class="string">container</span> <span class="string">log</span> <span class="string">output</span> <span class="string">if</span> <span class="string">the</span> <span class="string">termination</span> <span class="string">message</span> <span class="string">file</span> <span class="string">is</span> <span class="string">empty</span> <span class="string">and</span> <span class="string">the</span></span><br><span class="line">  <span class="string">container</span> <span class="string">exited</span> <span class="string">with</span> <span class="string">an</span> <span class="string">error.</span> <span class="string">The</span> <span class="string">log</span> <span class="string">output</span> <span class="string">is</span> <span class="string">limited</span> <span class="string">to</span> <span class="number">2048 </span><span class="string">bytes</span> <span class="string">or</span></span><br><span class="line">  <span class="number">80</span> <span class="string">lines,</span> <span class="string">whichever</span> <span class="string">is</span> <span class="string">smaller.</span> <span class="string">Defaults</span> <span class="string">to</span> <span class="string">File.</span> <span class="string">Cannot</span> <span class="string">be</span> <span class="string">updated.</span></span><br><span class="line"></span><br><span class="line"><span class="string">tty</span>	<span class="string">&lt;boolean&gt;</span></span><br><span class="line">  <span class="string">Whether</span> <span class="string">this</span> <span class="string">container</span> <span class="string">should</span> <span class="string">allocate</span> <span class="string">a</span> <span class="string">TTY</span> <span class="string">for</span> <span class="string">itself,</span> <span class="string">also</span> <span class="string">requires</span></span><br><span class="line">  <span class="string">&#x27;stdin&#x27;</span> <span class="string">to</span> <span class="string">be</span> <span class="string">true.</span> <span class="string">Default</span> <span class="string">is</span> <span class="string">false.</span></span><br><span class="line"></span><br><span class="line"><span class="string">volumeDevices</span>	<span class="string">&lt;[]Object&gt;</span></span><br><span class="line">  <span class="string">volumeDevices</span> <span class="string">is</span> <span class="string">the</span> <span class="string">list</span> <span class="string">of</span> <span class="string">block</span> <span class="string">devices</span> <span class="string">to</span> <span class="string">be</span> <span class="string">used</span> <span class="string">by</span> <span class="string">the</span> <span class="string">container.</span></span><br><span class="line"></span><br><span class="line"><span class="string">volumeMounts</span>	<span class="string">&lt;[]Object&gt;</span></span><br><span class="line">  <span class="string">Pod</span> <span class="string">volumes</span> <span class="string">to</span> <span class="string">mount</span> <span class="string">into</span> <span class="string">the</span> <span class="string">container&#x27;s</span> <span class="string">filesystem.</span> <span class="string">Cannot</span> <span class="string">be</span> <span class="string">updated.</span></span><br><span class="line"></span><br><span class="line"><span class="string">workingDir</span>	<span class="string">&lt;string&gt;</span></span><br><span class="line"> 	<span class="string">指定进容器的工作目录</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+<h2 id="1、镜像"><a href="#1、镜像" class="headerlink" title="1、镜像"></a>1、镜像</h2><p> 在 Kubernetes 的 Pod 中使用容器镜像之前，我们必须将其推送到一个镜像仓库（或者使用仓库中已经有的容器镜像）。在 Kubernetes 的 Pod 定义中定义容器时，必须指定容器所使用的镜像，容器中的 <code>image</code> 字段支持与 <code>docker</code> 命令一样的语法，包括私有镜像仓库和标签。 </p>
+<p><img src="../other/%E4%BA%91%E5%8E%9F%E7%94%9F/%E4%BA%91%E5%8E%9F%E7%94%9F/03%E3%80%81Kubernetes.assets/image-20200516160009893.png" alt="image-20200516160009893"></p>
+<p> 如果使用 <code>hub.dokcer.com</code> Registry 中的镜像，可以省略 registry 地址和 registry 端口。例如：<code>nginx:latest</code> </p>
+<p> Kubernetes中，默认的镜像抓取策略是 <code>IfNotPresent</code>，使用此策略，kubelet在发现本机有镜像的情况下，不会向镜像仓库抓取镜像。如果您期望每次启动 Pod 时，都强制从镜像仓库抓取镜像，可以尝试如下方式： </p>
+<ul>
+<li>设置 container 中的 <code>imagePullPolicy</code> 为 <code>Always</code></li>
+<li>省略 <code>imagePullPolicy</code> 字段，并使用 <code>:latest</code> tag 的镜像</li>
+<li>省略 <code>imagePullPolicy</code> 字段和镜像的 tag</li>
+<li>激活 <a target="_blank" rel="noopener" href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#alwayspullimages">AlwaysPullImages</a> 管理控制器</li>
+</ul>
+<p>docker pull redis    </p>
+<p>docker.io&#x2F;library&#x2F;redis:latest</p>
+<p><strong>下载私有仓库镜像</strong></p>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">#这个秘钥默认在default名称空间，不能被hello名称空间共享</span></span><br><span class="line">kubectl create secret -n hello docker-registry my-aliyun \</span><br><span class="line">  --docker-server=registry.cn-hangzhou.aliyuncs.com \</span><br><span class="line">  --docker-username=forsumlove \</span><br><span class="line">  --docker-password=lfy11223344</span><br><span class="line">  </span><br><span class="line">  <span class="comment"># 那个镜像对应哪个仓库没有任何问题</span></span><br><span class="line">  </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">foo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">foo</span></span><br><span class="line">      <span class="attr">image:</span> <span class="string">registry.cn-zhangjiakou.aliyuncs.com/atguigudocker/atguigu-java-img:v1.0</span></span><br><span class="line">  <span class="attr">imagePullSecrets:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mydocker</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="2、启动命令"><a href="#2、启动命令" class="headerlink" title="2、启动命令"></a>2、启动命令</h2>
+
+<h2 id="3、环境变量"><a href="#3、环境变量" class="headerlink" title="3、环境变量"></a>3、环境变量</h2><p> env指定即可</p>
+<h2 id="4、生命周期容器钩子"><a href="#4、生命周期容器钩子" class="headerlink" title="4、生命周期容器钩子"></a>4、生命周期容器钩子</h2><p>Kubernetes中为容器提供了两个 hook（钩子函数）：</p>
+<ul>
+<li><p><code>PostStart</code></p>
+<p>此钩子函数在容器创建后将立刻执行。但是，并不能保证该钩子函数在容器的 <code>ENTRYPOINT</code> 之前执行。该钩子函数没有输入参数。</p>
+</li>
+<li><p><code>PreStop</code></p>
+<p>此钩子函数在容器被 terminate（终止）之前执行，例如：</p>
+<ul>
+<li>通过接口调用删除容器所在 Pod</li>
+<li>某些管理事件的发生：健康检查失败、资源紧缺等</li>
+</ul>
+<p>如果容器已经被关闭或者进入了 <code>completed</code> 状态，preStop 钩子函数的调用将失败。该函数的执行是同步的，即，kubernetes 将在该函数完成执行之后才删除容器。该钩子函数没有输入参数。</p>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">lifecycle-demo</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">lifecycle-demo-container</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">alpine</span></span><br><span class="line">    <span class="attr">command:</span> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;echo hello; &quot;</span>]</span><br><span class="line">    <span class="attr">volumeMounts:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">mount1</span></span><br><span class="line">       	 <span class="attr">mountPath:</span> <span class="string">/app</span></span><br><span class="line">    <span class="attr">lifecycle:</span></span><br><span class="line">      <span class="attr">postStart:</span></span><br><span class="line">        <span class="attr">exec:</span></span><br><span class="line">          <span class="attr">command:</span> [<span class="string">&quot;/bin/sh&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;echo world;&quot;</span>]</span><br><span class="line">      <span class="attr">preStop:</span></span><br><span class="line">        <span class="attr">exec:</span></span><br><span class="line">          <span class="attr">command:</span> [<span class="string">&quot;/bin/sh&quot;</span>,<span class="string">&quot;-c&quot;</span>,<span class="string">&quot;echo 66666;&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Kubernetes 在容器启动后立刻发送 postStart 事件，但是并不能确保 postStart 事件处理程序在容器的 EntryPoint 之前执行。postStart 事件处理程序相对于容器中的进程来说是异步的（同时执行），然而，Kubernetes 在管理容器时，将一直等到 postStart 事件处理程序结束之后，才会将容器的状态标记为 Running。</li>
+<li>Kubernetes 在决定关闭容器时，立刻发送 preStop 事件，并且，将一直等到 preStop 事件处理程序结束或者 Pod 的 <code>--grace-period</code> 超时，才删除容器</li>
+</ul>
+<h2 id="3、资源限制"><a href="#3、资源限制" class="headerlink" title="3、资源限制"></a>3、资源限制</h2><figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="string">pods/qos/qos-pod.yaml</span> </span><br><span class="line"></span><br><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">qos-demo</span></span><br><span class="line">  <span class="attr">namespace:</span> <span class="string">qos-example</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">containers:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">qos-demo-ctr</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">nginx</span></span><br><span class="line">    <span class="attr">resources:</span></span><br><span class="line">    <span class="comment"># </span></span><br><span class="line">      <span class="attr">limits:</span>  <span class="comment"># 限制最大大小   -Xmx</span></span><br><span class="line">        <span class="attr">memory:</span> <span class="string">&quot;200Mi&quot;</span></span><br><span class="line">        <span class="attr">cpu:</span> <span class="string">&quot;700m&quot;</span> </span><br><span class="line">        <span class="comment"># 启动默认给分配的大小   -Xms</span></span><br><span class="line">      <span class="attr">requests:</span></span><br><span class="line">        <span class="attr">memory:</span> <span class="string">&quot;200Mi&quot;</span></span><br><span class="line">        <span class="attr">cpu:</span> <span class="string">&quot;700m&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="4、其他"><a href="#4、其他" class="headerlink" title="4、其他"></a>4、其他</h2><p>kubectl explain  解析一个资源Pod改怎么编写yaml</p>
+<p>kubectl describe 用来排错的，看资源的状态</p>
+<p>官方文档</p>
+<p>&#x3D; 专家</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://dongxiaopipi.github.io">Miller</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dongxiaopipi.github.io/2021/04/30/kubernetes/02%E3%80%81Kubernetes-%E6%A6%82%E5%BF%B5/">https://dongxiaopipi.github.io/2021/04/30/kubernetes/02%E3%80%81Kubernetes-%E6%A6%82%E5%BF%B5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://dongxiaopipi.github.io" target="_blank">Miller</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg3.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" src="/img/alipay.jpg" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/11/27/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E6%9F%A5%E6%89%BE/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" title="二分查找"><img class="cover" src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">二分查找</div></div></a></div><div class="next-post pull-right"><a href="/2021/04/27/kubernetes/01%E3%80%81Kubernetes-%E5%9F%BA%E7%A1%80%E5%85%A5%E9%97%A8/" title=""><img class="cover" src="https://jsd.012700.xyz/gh/jerryc127/CDN@latest/cover/default_bg2.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info"></div></div></a></div></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Miller</div><div class="author-info__description">但行前路，不负韶华！</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">38</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dongxiaopipi"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/dongxiaopipi" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5%E7%90%86%E8%A7%A3"><span class="toc-number">1.</span> <span class="toc-text">一、基础概念理解</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E3%80%81kubernetes-Objects%EF%BC%88k8s%E5%AF%B9%E8%B1%A1%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">二、kubernetes Objects（k8s对象）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E4%BB%80%E4%B9%88%E6%98%AFk8s%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.1.</span> <span class="toc-text">1、什么是k8s对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E6%8F%8F%E8%BF%B0k8s%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.2.</span> <span class="toc-text">2、描述k8s对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81k8s%E5%AF%B9%E8%B1%A1yaml%E7%9A%84%E7%BB%93%E6%9E%84"><span class="toc-number">2.3.</span> <span class="toc-text">3、k8s对象yaml的结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E7%AE%A1%E7%90%86k8s%E5%AF%B9%E8%B1%A1"><span class="toc-number">2.4.</span> <span class="toc-text">4、管理k8s对象</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5%E3%80%81%E5%AF%B9%E8%B1%A1%E5%90%8D%E7%A7%B0"><span class="toc-number">2.5.</span> <span class="toc-text">5、对象名称</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6%E3%80%81%E5%90%8D%E7%A7%B0%E7%A9%BA%E9%97%B4"><span class="toc-number">2.6.</span> <span class="toc-text">6、名称空间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E3%80%81%E6%A0%87%E7%AD%BE%E5%92%8C%E9%80%89%E6%8B%A9%E5%99%A8"><span class="toc-number">2.7.</span> <span class="toc-text">7 、标签和选择器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8%E3%80%81%E6%B3%A8%E8%A7%A3annotation"><span class="toc-number">2.8.</span> <span class="toc-text">8、注解annotation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9%E3%80%81%E5%AD%97%E6%AE%B5%E9%80%89%E6%8B%A9%E5%99%A8"><span class="toc-number">2.9.</span> <span class="toc-text">9、字段选择器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10%E3%80%81%E7%BB%99vscode%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="toc-number">2.10.</span> <span class="toc-text">10、给vscode安装插件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11%E3%80%81%E8%AE%A4%E8%AF%86kubectl%E5%92%8Ckubelet"><span class="toc-number">2.11.</span> <span class="toc-text">11、认识kubectl和kubelet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12%E3%80%81%E8%87%AA%E5%8A%A8%E8%A1%A5%E5%85%A8"><span class="toc-number">2.12.</span> <span class="toc-text">12、自动补全</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%87%E7%89%A9%E5%9F%BA%E7%A1%80-%E5%AE%B9%E5%99%A8"><span class="toc-number">3.</span> <span class="toc-text">三、万物基础-容器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1%E3%80%81%E9%95%9C%E5%83%8F"><span class="toc-number">3.1.</span> <span class="toc-text">1、镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2%E3%80%81%E5%90%AF%E5%8A%A8%E5%91%BD%E4%BB%A4"><span class="toc-number">3.2.</span> <span class="toc-text">2、启动命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">3.3.</span> <span class="toc-text">3、环境变量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%AE%B9%E5%99%A8%E9%92%A9%E5%AD%90"><span class="toc-number">3.4.</span> <span class="toc-text">4、生命周期容器钩子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3%E3%80%81%E8%B5%84%E6%BA%90%E9%99%90%E5%88%B6"><span class="toc-number">3.5.</span> <span class="toc-text">3、资源限制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4%E3%80%81%E5%85%B6%E4%BB%96"><span class="toc-number">3.6.</span> <span class="toc-text">4、其他</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/29/Spring/Conditional%E6%B3%A8%E8%A7%A3/" title="Spring注解">Spring注解</a><time datetime="2023-12-29T14:15:37.000Z" title="发表于 2023-12-29 22:15:37">2023-12-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/29/Spring/Spring5.3.X%E6%BA%90%E7%A0%81%E6%90%AD%E5%BB%BA/" title="Spring5.3.X源码搭建">Spring5.3.X源码搭建</a><time datetime="2023-12-29T14:15:37.000Z" title="发表于 2023-12-29 22:15:37">2023-12-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/29/SpringBoot/@ConditionalOnMissingBean/" title="ConditionalOnMissingBean注解">ConditionalOnMissingBean注解</a><time datetime="2023-12-29T14:15:37.000Z" title="发表于 2023-12-29 22:15:37">2023-12-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/05/JVM/5%E3%80%81%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/" title="5、JVM执行引擎">5、JVM执行引擎</a><time datetime="2023-12-05T01:55:37.000Z" title="发表于 2023-12-05 09:55:37">2023-12-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/05/JVM/4%E3%80%81%E5%AF%B9%E8%B1%A1%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80/" title="4、JVM对象内存布局">4、JVM对象内存布局</a><time datetime="2023-12-05T01:55:37.000Z" title="发表于 2023-12-05 09:55:37">2023-12-05</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Miller</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const initGitalk = () => {
+    const gitalk = new Gitalk(Object.assign({
+      clientID: 'db42a262fa6f18cde447',
+      clientSecret: '6b983379141001746330082f46fbd2b645ce1e33',
+      repo: 'dongxiaopipi.github.io',
+      owner: 'dongxiaopipi',
+      admin: ['dongxiaopipi'],
+      id: '34a5328570e5a8e652eba2910cc04979',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  const loadGitalk = async() => {
+    if (typeof Gitalk === 'function') initGitalk()
+    else {
+      await getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+      await getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js')
+      initGitalk()
+    }
+  }
+  
+  const commentCount = n => {
+    const isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+    if (isCommentCount) {
+      isCommentCount.textContent= n
+    }
+  }
+
+  if ('Gitalk' === 'Gitalk' || !true) {
+    if (true) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+    else loadGitalk()
+  } else {
+    window.loadOtherComment = loadGitalk
+  }
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
